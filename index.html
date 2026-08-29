@@ -3,337 +3,803 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Time &amp; Calendar — Learning Board</title>
+<title>Learning Board</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --ink:#FCF7EE;
-  --ink-dim:rgba(252,247,238,.62);
-  --line:rgba(252,247,238,.16);
+  --bg:#0F1220; --panel:#1B2038; --panel2:#242A48;
+  --ink:#FCF7EE; --ink-dim:rgba(252,247,238,.68); --line:rgba(252,247,238,.14);
   --radius:20px;
-  --display:'Bricolage Grotesque',system-ui,sans-serif;
-  --body:'Atkinson Hyperlegible',system-ui,sans-serif;
+  --font:'Atkinson Hyperlegible',system-ui,-apple-system,sans-serif;
+  --time:#4ECDC4; --time-ink:#0B2725;
+  --money:#7ED957; --money-ink:#0F2B08;
+  --clock:#FF9F45; --clock-ink:#2a1500;
+  --devotion:#D89AC4; --devotion-ink:#3a0a2a;
+  --right:#7ED957; --wrong:#FF7A70;
+  --reading:#FFD24C; --reading-ink:#1a1000;
 }
-body[data-season="spring"]{ --bg:#12281C; --panel:#1B3A28; --accent:#A6E86B; --accent2:#F6A5C4; --accent-ink:#0D1F14; }
-body[data-season="summer"]{ --bg:#0D2A2B; --panel:#153B3C; --accent:#FFC94A; --accent2:#4ECDC4; --accent-ink:#241A00; }
-body[data-season="fall"]{   --bg:#2A180F; --panel:#3C2417; --accent:#FF9F45; --accent2:#E8663A; --accent-ink:#2A1000; }
-body[data-season="winter"]{ --bg:#111D33; --panel:#1B2B47; --accent:#8FD3FF; --accent2:#C9B8FF; --accent-ink:#06182B; }
+body[data-subject="time"]      { --accent:var(--time);      --accent-ink:var(--time-ink); }
+body[data-subject="money"]     { --accent:var(--money);     --accent-ink:var(--money-ink); }
+body[data-subject="clock"]     { --accent:var(--clock);     --accent-ink:var(--clock-ink); }
+body[data-subject="devotion"]  { --accent:var(--devotion);  --accent-ink:var(--devotion-ink); }
+body[data-subject="home"]      { --accent:#FCF7EE;          --accent-ink:#0F1220; }
 
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
-body{
-  background:var(--bg);
-  color:var(--ink);
-  font-family:var(--body);
-  -webkit-font-smoothing:antialiased;
-  overflow-x:hidden;
-  transition:background .6s ease;
-}
-body::before{
-  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
-  background:radial-gradient(120% 80% at 50% -20%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 60%);
-}
-.wrap{position:relative;z-index:1;max-width:1400px;margin:0 auto;padding:16px 18px 40px}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+button{font-family:var(--font)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 
-/* ---------- top bar ---------- */
-.topbar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:18px}
-.mark{font-family:var(--display);font-weight:800;font-size:clamp(18px,2.4vw,26px);letter-spacing:-.02em;line-height:1}
-.mark span{color:var(--accent)}
-.seasonpill{
-  font-family:var(--body);font-weight:700;font-size:clamp(12px,1.5vw,15px);
-  background:var(--accent);color:var(--accent-ink);padding:7px 14px;border-radius:999px;
-}
-.speak{
-  margin-left:auto;background:transparent;border:2px solid var(--line);color:var(--ink);
-  font-family:var(--body);font-weight:700;font-size:clamp(13px,1.6vw,16px);
-  padding:10px 18px;border-radius:999px;cursor:pointer;display:flex;align-items:center;gap:8px;
-}
-.speak:hover,.speak:focus-visible{border-color:var(--accent);color:var(--accent)}
+.screen{display:none;min-height:100vh;padding:16px 18px 40px}
+.screen.on{display:block;animation:fade .3s ease both}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.wrap{max-width:1400px;margin:0 auto}
 
-/* ---------- tabs ---------- */
-.tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:22px;scrollbar-width:none}
+#screen-home{background:radial-gradient(120% 80% at 50% -10%,#2A2F55,transparent 60%),#0F1220}
+.home-head{text-align:center;padding:clamp(20px,6vw,60px) 0 clamp(24px,5vw,44px)}
+.home-head h1{font-weight:700;font-size:clamp(38px,8vw,84px);letter-spacing:-.02em;line-height:1}
+.home-head p{margin-top:14px;font-size:clamp(16px,2.2vw,22px);color:var(--ink-dim);font-weight:700}
+.tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:clamp(12px,2.5vw,24px);max-width:1000px;margin:0 auto}
+.tile{aspect-ratio:1.35/1;border-radius:24px;border:none;cursor:pointer;padding:clamp(18px,3vw,32px);display:flex;flex-direction:column;justify-content:space-between;text-align:left;color:#0F1220;font-family:var(--font);transition:transform .2s}
+.tile:hover{transform:translateY(-4px)}
+.tile.time{background:linear-gradient(140deg,#4ECDC4,#2FA8A0)}
+.tile.money{background:linear-gradient(140deg,#7ED957,#4EA83A)}
+.tile.clock{background:linear-gradient(140deg,#FF9F45,#FF6B35)}
+.tile.devotion{background:linear-gradient(140deg,#D89AC4,#A85899)}
+.tile.soon{background:#242A48;color:var(--ink-dim);cursor:default;position:relative}
+.tile.soon:hover{transform:none}
+.tile-icon{font-size:clamp(46px,8vw,90px);line-height:1}
+.tile-name{font-weight:700;font-size:clamp(22px,3.6vw,42px);letter-spacing:-.02em;line-height:1.05}
+.soon-label{position:absolute;top:14px;right:14px;background:rgba(0,0,0,.35);color:var(--ink);font-weight:700;font-size:clamp(11px,1.4vw,14px);padding:6px 12px;border-radius:999px;letter-spacing:.05em;text-transform:uppercase}
+
+.topnav{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.home-btn,.speak-btn,.mic-btn{background:transparent;border:2px solid var(--line);color:var(--ink);font-weight:700;font-size:clamp(13px,1.6vw,16px);padding:10px 18px;border-radius:999px;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.home-btn:hover,.speak-btn:hover,.mic-btn:hover{border-color:var(--accent);color:var(--accent)}
+.subject-title{font-weight:700;font-size:clamp(18px,2.6vw,28px);letter-spacing:-.02em;padding:8px 18px;background:var(--accent);color:var(--accent-ink);border-radius:999px}
+.speak-btn.top{margin-left:auto}
+
+.tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:20px;scrollbar-width:none}
 .tabs::-webkit-scrollbar{display:none}
-.tab{
-  flex:0 0 auto;font-family:var(--display);font-weight:700;
-  font-size:clamp(15px,2vw,21px);letter-spacing:-.01em;
-  padding:12px 22px;border-radius:999px;border:2px solid var(--line);
-  background:transparent;color:var(--ink-dim);cursor:pointer;transition:.18s;
-}
+.tab{flex:0 0 auto;font-weight:700;font-size:clamp(14px,1.8vw,18px);padding:12px 22px;border-radius:999px;border:2px solid var(--line);background:transparent;color:var(--ink-dim);cursor:pointer;transition:.15s;letter-spacing:-.01em}
 .tab:hover{color:var(--ink);border-color:var(--ink-dim)}
 .tab[aria-selected="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
-
-/* ---------- panels ---------- */
-.panel{display:none;animation:rise .35s ease both}
+.panel{display:none;animation:fade .3s ease both}
 .panel.on{display:block}
-@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 
-.card{background:var(--panel);border-radius:var(--radius);padding:clamp(18px,2.6vw,32px)}
-.eyebrow{
-  font-family:var(--body);font-weight:700;text-transform:uppercase;
-  letter-spacing:.14em;font-size:clamp(11px,1.3vw,14px);color:var(--accent);margin-bottom:12px;
-}
+.card{background:var(--panel);border-radius:var(--radius);padding:clamp(18px,2.6vw,32px);margin-bottom:16px}
+.eyebrow{font-weight:700;text-transform:uppercase;letter-spacing:.14em;font-size:clamp(11px,1.3vw,14px);color:var(--accent);margin-bottom:14px}
 
-/* ---------- TODAY ---------- */
 .today-grid{display:grid;grid-template-columns:1.35fr 1fr;gap:16px}
-.bigday{
-  font-family:var(--display);font-weight:800;letter-spacing:-.03em;line-height:.86;
-  font-size:clamp(56px,12vw,150px);color:var(--accent);
-}
-.bigdate{
-  font-family:var(--display);font-weight:700;letter-spacing:-.02em;
-  font-size:clamp(24px,4.4vw,54px);margin-top:14px;line-height:1.05;
-}
+.bigday{font-weight:700;letter-spacing:-.03em;line-height:.9;font-size:clamp(50px,11vw,140px);color:var(--accent)}
+.bigdate{font-weight:700;letter-spacing:-.02em;font-size:clamp(22px,4vw,48px);margin-top:14px;line-height:1.1}
 .neighbors{display:grid;gap:12px}
-.nb{background:rgba(0,0,0,.22);border-radius:16px;padding:clamp(14px,2vw,22px)}
-.nb b{display:block;font-family:var(--display);font-weight:700;font-size:clamp(22px,3.4vw,40px);letter-spacing:-.02em}
-.nb small{font-family:var(--body);font-weight:700;font-size:clamp(12px,1.4vw,15px);color:var(--ink-dim);text-transform:uppercase;letter-spacing:.12em}
+.nb{background:var(--panel2);border-radius:16px;padding:clamp(14px,2vw,22px)}
+.nb small{font-weight:700;font-size:clamp(12px,1.4vw,15px);color:var(--ink-dim);text-transform:uppercase;letter-spacing:.12em;display:block;margin-bottom:6px}
+.nb b{font-weight:700;font-size:clamp(22px,3.4vw,40px);letter-spacing:-.02em}
 
-/* ---------- WEEK ---------- */
-.weekstrip{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;margin-top:6px}
-.daybtn{
-  background:rgba(0,0,0,.22);border:2px solid transparent;border-radius:16px;
-  padding:clamp(14px,2vw,26px) 6px;cursor:pointer;color:var(--ink);text-align:center;transition:.18s;
-}
+.birthdays{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.bday{background:var(--panel2);border:3px solid transparent;border-radius:18px;padding:clamp(16px,2.4vw,24px);cursor:pointer;color:var(--ink);text-align:center;font-family:var(--font);transition:.15s}
+.bday:hover{border-color:var(--ink-dim)}
+.bday.today{background:linear-gradient(135deg,#FFD24C,#FF9F45);color:#1a1000;border-color:#FFEBB0;animation:party 2s ease infinite}
+@keyframes party{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
+.bday-icon{font-size:clamp(28px,4vw,44px);line-height:1;margin-bottom:6px}
+.bday-name{font-weight:700;font-size:clamp(22px,3vw,34px);letter-spacing:-.02em;line-height:1.1}
+.bday-age{font-weight:700;color:var(--accent);font-size:clamp(13px,1.7vw,17px);margin-top:4px;text-transform:uppercase;letter-spacing:.08em}
+.bday.today .bday-age{color:#5a3800}
+.bday-date{font-weight:700;font-size:clamp(15px,2vw,22px);margin-top:10px;letter-spacing:-.01em}
+.bday-count{font-weight:700;color:var(--ink-dim);font-size:clamp(13px,1.6vw,17px);margin-top:6px}
+.bday.today .bday-count{color:#5a3800;font-size:clamp(15px,2vw,22px)}
+
+.weekstrip{display:grid;grid-template-columns:repeat(7,1fr);gap:10px}
+.daybtn{background:var(--panel2);border:2px solid transparent;border-radius:16px;padding:clamp(14px,2vw,26px) 6px;cursor:pointer;color:var(--ink);text-align:center;transition:.15s;font-family:var(--font)}
 .daybtn:hover{border-color:var(--ink-dim)}
-.daybtn .abbr{font-family:var(--display);font-weight:800;font-size:clamp(20px,3.2vw,44px);letter-spacing:-.02em;line-height:1}
-.daybtn .num{font-family:var(--body);font-weight:700;font-size:clamp(11px,1.3vw,15px);color:var(--ink-dim);margin-top:8px}
+.daybtn .abbr{font-weight:700;font-size:clamp(20px,3.2vw,44px);letter-spacing:-.02em;line-height:1}
+.daybtn .num{font-weight:700;font-size:clamp(11px,1.3vw,15px);color:var(--ink-dim);margin-top:8px}
 .daybtn.is-today{background:var(--accent);color:var(--accent-ink)}
 .daybtn.is-today .num{color:var(--accent-ink);opacity:.75}
-.daybtn.is-weekend .abbr{color:var(--accent2)}
-.daybtn.is-today .abbr{color:var(--accent-ink)}
-.readout{
-  margin-top:18px;font-family:var(--display);font-weight:700;letter-spacing:-.02em;
-  font-size:clamp(20px,3.2vw,40px);min-height:1.2em;line-height:1.25;
-}
+.readout{margin-top:18px;font-weight:700;letter-spacing:-.02em;font-size:clamp(17px,2.6vw,28px);min-height:1.2em;line-height:1.4}
 .readout em{font-style:normal;color:var(--accent)}
-
-/* ---------- MONTH GRID ---------- */
 .calhead{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:16px}
-.calhead h2{font-family:var(--display);font-weight:800;letter-spacing:-.03em;font-size:clamp(30px,5.5vw,66px);line-height:1}
-.calhead p{font-family:var(--body);font-weight:700;color:var(--ink-dim);font-size:clamp(13px,1.7vw,18px)}
+.calhead h2{font-weight:700;letter-spacing:-.03em;font-size:clamp(28px,5vw,60px);line-height:1}
+.calhead p{font-weight:700;color:var(--ink-dim);font-size:clamp(13px,1.7vw,18px)}
 .cal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
-.cal .dow{
-  font-family:var(--body);font-weight:700;text-align:center;color:var(--ink-dim);
-  font-size:clamp(11px,1.5vw,16px);text-transform:uppercase;letter-spacing:.1em;padding-bottom:8px;
-}
-.cal .cell{
-  aspect-ratio:1/.82;display:flex;align-items:center;justify-content:center;border-radius:12px;
-  background:rgba(0,0,0,.2);font-family:var(--display);font-weight:700;
-  font-size:clamp(14px,2.3vw,30px);letter-spacing:-.02em;
-}
+.cal .dow{font-weight:700;text-align:center;color:var(--ink-dim);font-size:clamp(11px,1.5vw,16px);text-transform:uppercase;letter-spacing:.1em;padding-bottom:8px}
+.cal .cell{aspect-ratio:1/.82;display:flex;align-items:center;justify-content:center;border-radius:12px;background:var(--panel2);font-weight:700;font-size:clamp(14px,2.3vw,30px);letter-spacing:-.02em;position:relative}
 .cal .cell.blank{background:transparent}
 .cal .cell.today{background:var(--accent);color:var(--accent-ink);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 35%,transparent)}
 .cal .cell.past{color:var(--ink-dim)}
-
-/* ---------- YEAR RIBBON (signature) ---------- */
-.ribbon{display:grid;grid-template-columns:repeat(12,1fr);gap:5px;margin-top:8px}
-.mo{
-  border-radius:12px;padding:clamp(12px,1.8vw,20px) 4px;text-align:center;cursor:pointer;
-  border:2px solid transparent;transition:.18s;color:var(--ink);background:rgba(0,0,0,.22);
-}
-.mo .mabbr{font-family:var(--display);font-weight:800;font-size:clamp(13px,1.9vw,26px);letter-spacing:-.02em;line-height:1}
-.mo .mnum{font-family:var(--body);font-weight:700;font-size:clamp(10px,1.1vw,13px);color:var(--ink-dim);margin-top:6px}
+.cal .cell.bday::after{content:"🎂";position:absolute;top:2px;right:3px;font-size:14px}
+.ribbon{display:grid;grid-template-columns:repeat(12,1fr);gap:5px}
+.mo{border-radius:12px;padding:clamp(12px,1.8vw,20px) 4px;text-align:center;cursor:pointer;border:2px solid transparent;transition:.15s;color:var(--ink);background:var(--panel2);font-family:var(--font)}
+.mo .mabbr{font-weight:700;font-size:clamp(13px,1.9vw,26px);letter-spacing:-.02em;line-height:1}
+.mo .mnum{font-weight:700;font-size:clamp(10px,1.1vw,13px);color:var(--ink-dim);margin-top:6px}
 .mo:hover{border-color:var(--ink-dim)}
 .mo.now{background:var(--accent);color:var(--accent-ink)}
 .mo.now .mnum{color:var(--accent-ink);opacity:.75}
-.mo[data-s="spring"] .mabbr{color:#A6E86B}
-.mo[data-s="summer"] .mabbr{color:#FFC94A}
-.mo[data-s="fall"]   .mabbr{color:#FF9F45}
-.mo[data-s="winter"] .mabbr{color:#8FD3FF}
-.mo.now .mabbr{color:var(--accent-ink)}
-.legend{display:flex;gap:18px;flex-wrap:wrap;margin-top:20px}
-.legend span{display:flex;align-items:center;gap:8px;font-family:var(--body);font-weight:700;font-size:clamp(12px,1.5vw,16px);color:var(--ink-dim)}
-.dot{width:14px;height:14px;border-radius:50%}
-
-/* ---------- SEASONS ---------- */
 .seasons{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-.sea{
-  border-radius:18px;padding:clamp(16px,2.4vw,30px);background:rgba(0,0,0,.22);
-  border:3px solid transparent;cursor:pointer;color:var(--ink);text-align:left;transition:.18s;
-}
+.sea{border-radius:18px;padding:clamp(16px,2.4vw,26px);background:var(--panel2);border:3px solid transparent;cursor:pointer;color:var(--ink);text-align:left;transition:.15s;font-family:var(--font)}
 .sea:hover{border-color:var(--ink-dim)}
-.sea.now{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 14%,transparent)}
-.sea .icon{font-size:clamp(30px,5vw,60px);line-height:1;display:block;margin-bottom:10px}
-.sea h3{font-family:var(--display);font-weight:800;letter-spacing:-.02em;font-size:clamp(19px,2.8vw,34px);margin-bottom:8px}
-.sea p{font-family:var(--body);font-size:clamp(12px,1.5vw,17px);color:var(--ink-dim);line-height:1.5}
-.sea.now h3{color:var(--accent)}
+.sea .icon{font-size:clamp(28px,4.5vw,52px);line-height:1;display:block;margin-bottom:10px}
+.sea h3{font-weight:700;letter-spacing:-.02em;font-size:clamp(18px,2.6vw,30px);margin-bottom:8px}
+.sea p{font-size:clamp(12px,1.5vw,17px);color:var(--ink-dim);line-height:1.5;font-weight:400}
+.ladder{display:flex;flex-direction:column;gap:10px}
+.rung{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;background:var(--panel2);border-radius:16px;padding:clamp(14px,2vw,22px);cursor:pointer;border:2px solid transparent;transition:.15s}
+.rung:hover{border-color:var(--accent)}
+.rung .lhs{font-weight:700;font-size:clamp(20px,3.4vw,40px);letter-spacing:-.02em;background:var(--accent);color:var(--accent-ink);padding:8px 16px;border-radius:12px;min-width:80px;text-align:center}
+.rung .mid{font-weight:700;font-size:clamp(15px,2vw,22px)}
+.rung .rhs{font-weight:700;font-size:clamp(16px,2.4vw,26px);color:var(--accent);letter-spacing:-.02em}
 
-/* ---------- PRACTICE ---------- */
-.q{font-family:var(--display);font-weight:800;letter-spacing:-.025em;font-size:clamp(26px,4.6vw,58px);line-height:1.1;margin-bottom:24px}
+/* CLOCK STYLES */
+.clock-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
+.clock-display{background:var(--panel2);border-radius:20px;padding:clamp(20px,3vw,40px);text-align:center}
+.digital-time{font-weight:700;font-size:clamp(48px,10vw,120px);letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:var(--accent);line-height:1;font-family:monospace}
+.time-label{font-weight:700;color:var(--ink-dim);font-size:clamp(14px,2vw,20px);margin-top:16px;text-transform:uppercase;letter-spacing:.1em}
+.analog-wrap{position:relative;width:100%;max-width:280px;aspect-ratio:1;margin:0 auto}
+.analog-clock{width:100%;height:100%;border-radius:50%;background:var(--panel2);box-shadow:inset 0 0 0 8px var(--panel),inset 0 0 20px rgba(0,0,0,.4);position:relative;border:3px solid var(--accent)}
+.clock-center{position:absolute;top:50%;left:50%;width:16px;height:16px;background:var(--accent);border-radius:50%;transform:translate(-50%,-50%);z-index:3}
+.hand{position:absolute;bottom:50%;left:50%;transform-origin:bottom center;background:var(--accent);border-radius:2px}
+.hand.hour{width:8px;height:28%;margin-left:-4px;animation:spinHour 43200s linear infinite}
+.hand.minute{width:6px;height:38%;margin-left:-3px;animation:spinMinute 3600s linear infinite}
+@keyframes spinHour{from{transform:translateX(-50%) rotate(0deg)}to{transform:translateX(-50%) rotate(360deg)}}
+@keyframes spinMinute{from{transform:translateX(-50%) rotate(0deg)}to{transform:translateX(-50%) rotate(360deg)}}
+.clock-numbers{position:absolute;width:100%;height:100%;border-radius:50%}
+.clock-num{position:absolute;width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:clamp(16px,3vw,24px);color:var(--ink);}
+.clock-num.n12{transform:rotate(0deg)}
+.clock-num.n1{transform:rotate(30deg)}
+.clock-num.n2{transform:rotate(60deg)}
+.clock-num.n3{transform:rotate(90deg)}
+.clock-num.n4{transform:rotate(120deg)}
+.clock-num.n5{transform:rotate(150deg)}
+.clock-num.n6{transform:rotate(180deg)}
+.clock-num.n7{transform:rotate(210deg)}
+.clock-num.n8{transform:rotate(240deg)}
+.clock-num.n9{transform:rotate(270deg)}
+.clock-num.n10{transform:rotate(300deg)}
+.clock-num.n11{transform:rotate(330deg)}
+.clock-num span{display:inline-block;transform:rotate(calc(-1 * var(--rot)))}
+.clock-num.n1 span{--rot:30deg}
+.clock-num.n2 span{--rot:60deg}
+.clock-num.n3 span{--rot:90deg}
+.clock-num.n4 span{--rot:120deg}
+.clock-num.n5 span{--rot:150deg}
+.clock-num.n6 span{--rot:180deg}
+.clock-num.n7 span{--rot:210deg}
+.clock-num.n8 span{--rot:240deg}
+.clock-num.n9 span{--rot:270deg}
+.clock-num.n10 span{--rot:300deg}
+.clock-num.n11 span{--rot:330deg}
+
+.clock-info{background:var(--panel2);border-radius:20px;padding:clamp(16px,2.6vw,24px)}
+.clock-info h3{font-weight:700;font-size:clamp(18px,2.6vw,26px);letter-spacing:-.02em;margin-bottom:12px;color:var(--accent)}
+.clock-info p{font-size:clamp(14px,1.8vw,18px);line-height:1.6;color:var(--ink-dim);margin-bottom:12px}
+
+.coinrow{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;align-items:end}
+.coincell{background:var(--panel2);border-radius:18px;padding:clamp(16px,2.4vw,26px);text-align:center;cursor:pointer;border:3px solid transparent;transition:.15s;color:var(--ink);font-family:var(--font)}
+.coincell:hover{border-color:var(--ink-dim)}
+.coin{border-radius:50%;aspect-ratio:1;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;font-weight:700;letter-spacing:-.02em;box-shadow:inset 0 -4px 8px rgba(0,0,0,.25),inset 0 4px 8px rgba(255,255,255,.25)}
+.coin.penny{background:radial-gradient(circle at 30% 30%,#D89464,#8B4513);color:#2a1500;width:65%;font-size:clamp(20px,3vw,32px)}
+.coin.nickel{background:radial-gradient(circle at 30% 30%,#E8E8E8,#8A8A8A);color:#1a1a1a;width:78%;font-size:clamp(22px,3.4vw,36px)}
+.coin.dime{background:radial-gradient(circle at 30% 30%,#E8E8E8,#8A8A8A);color:#1a1a1a;width:55%;font-size:clamp(18px,2.6vw,28px)}
+.coin.quarter{background:radial-gradient(circle at 30% 30%,#EEEEEE,#909090);color:#1a1a1a;width:88%;font-size:clamp(24px,3.8vw,40px)}
+.coincell .cname{font-weight:700;font-size:clamp(16px,2.2vw,26px);letter-spacing:-.02em;margin-bottom:4px}
+.coincell .cval{font-weight:700;font-size:clamp(20px,2.8vw,32px);color:var(--accent);letter-spacing:-.02em}
+
+.billrow{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+@media(min-width:640px){.billrow{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:1000px){.billrow{grid-template-columns:repeat(6,1fr)}}
+.billcell{background:var(--panel2);border-radius:18px;padding:clamp(16px,2vw,22px);text-align:center;cursor:pointer;border:3px solid transparent;transition:.15s;color:var(--ink);font-family:var(--font)}
+.billcell:hover{border-color:var(--ink-dim)}
+.bill{aspect-ratio:2.35/1;border-radius:8px;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#93C878,#4A7C3F);color:#fff;border:3px solid #2d5a1c;font-weight:700;letter-spacing:-.02em;font-size:clamp(24px,4vw,44px);text-shadow:0 2px 4px rgba(0,0,0,.35)}
+.bill.b50{border-color:#8B4444}
+.bill.b100{border-color:#3B5F8B}
+.billcell .bname{font-weight:700;font-size:clamp(14px,1.9vw,20px);letter-spacing:-.02em}
+
+.countbox{background:var(--panel2);border-radius:18px;padding:clamp(18px,3vw,32px);display:flex;flex-wrap:wrap;gap:14px;justify-content:center;align-items:center;min-height:180px}
+.countbox .coin{flex:0 0 auto;margin:0}
+.countbox .coin.penny{width:65px;height:65px;font-size:16px}
+.countbox .coin.nickel{width:78px;height:78px;font-size:18px}
+.countbox .coin.dime{width:55px;height:55px;font-size:14px}
+.countbox .coin.quarter{width:88px;height:88px;font-size:20px}
+
+/* QUIZ - options now have visuals and highlight when spoken */
+.q{font-weight:700;letter-spacing:-.025em;font-size:clamp(24px,4.2vw,54px);line-height:1.1;margin-bottom:14px}
+.q.speaking{background:var(--reading);color:var(--reading-ink);padding:14px 18px;border-radius:14px;box-shadow:0 6px 20px rgba(255,210,76,.35)}
+.qhint{font-weight:700;color:var(--ink-dim);font-size:clamp(13px,1.6vw,17px);margin-bottom:20px;font-style:italic}
 .opts{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.opt{
-  background:rgba(0,0,0,.22);border:3px solid transparent;border-radius:18px;
-  padding:clamp(18px,3vw,36px) 10px;cursor:pointer;color:var(--ink);
-  font-family:var(--display);font-weight:700;letter-spacing:-.02em;
-  font-size:clamp(18px,2.8vw,36px);transition:.15s;
-}
+.opt{background:var(--panel2);border:3px solid transparent;border-radius:18px;padding:clamp(16px,2.5vw,24px) 10px;cursor:pointer;color:var(--ink);font-weight:700;letter-spacing:-.02em;transition:.2s;min-height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;font-family:var(--font);position:relative}
 .opt:hover:not(:disabled){border-color:var(--ink-dim)}
-.opt.right{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
-.opt.wrong{border-color:var(--accent2);opacity:.55}
+.opt-visual{display:flex;align-items:center;justify-content:center;min-height:60px;width:100%}
+.opt-visual .coin{flex:0 0 auto;margin:0}
+.opt-visual .coin.penny{width:52px;height:52px;font-size:15px}
+.opt-visual .coin.nickel{width:60px;height:60px;font-size:16px}
+.opt-visual .coin.dime{width:44px;height:44px;font-size:13px}
+.opt-visual .coin.quarter{width:68px;height:68px;font-size:19px}
+.opt-visual .bill{width:110px;height:46px;font-size:22px;border-width:2px;margin:0}
+.opt-visual .season-emoji{font-size:44px;line-height:1}
+.opt-text{font-size:clamp(17px,2.4vw,28px);font-weight:700;letter-spacing:-.02em}
+.opt.speaking{background:var(--reading);border-color:#FFEBB0;color:var(--reading-ink);transform:scale(1.06);z-index:2;box-shadow:0 10px 30px rgba(255,210,76,.4)}
+.opt.speaking .opt-text{color:var(--reading-ink)}
+.opt.right{background:var(--right);color:#0F1220;border-color:var(--right)}
+.opt.right .opt-text{color:#0F1220}
+.opt.wrong{border-color:var(--wrong);opacity:.55}
 .opt:disabled{cursor:default}
-.scorebar{display:flex;align-items:center;gap:20px;margin-top:26px;flex-wrap:wrap}
-.score{font-family:var(--display);font-weight:800;font-size:clamp(18px,2.4vw,30px);letter-spacing:-.02em}
-.score b{color:var(--accent)}
-.next{
-  background:var(--accent);color:var(--accent-ink);border:none;border-radius:999px;
-  font-family:var(--display);font-weight:800;font-size:clamp(15px,2vw,22px);
-  padding:14px 32px;cursor:pointer;letter-spacing:-.01em;
-}
-.next[hidden]{display:none}
+.feedback{margin-top:22px;padding:20px;border-radius:16px;text-align:center;font-weight:700;font-size:clamp(20px,3.4vw,36px);letter-spacing:-.02em;display:none}
+.feedback.show{display:block;animation:pop .3s ease both}
+@keyframes pop{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
+.feedback.good{background:var(--right);color:#0F1220}
+.feedback.bad{background:var(--wrong);color:#fff}
+.quizbar{display:flex;align-items:center;gap:16px;margin-top:24px;flex-wrap:wrap;justify-content:center}
+.progress{font-weight:700;font-size:clamp(15px,2vw,20px);color:var(--ink-dim)}
+.progress b{color:var(--accent)}
+.next-btn{background:var(--accent);color:var(--accent-ink);border:none;border-radius:999px;font-weight:700;font-size:clamp(15px,2vw,22px);padding:14px 32px;cursor:pointer;letter-spacing:-.01em;font-family:var(--font)}
+.next-btn[hidden]{display:none}
+.hear-btn{background:var(--reading);color:var(--reading-ink);border:none;border-radius:999px;font-weight:700;font-size:clamp(14px,1.8vw,18px);padding:12px 22px;cursor:pointer;letter-spacing:-.01em;font-family:var(--font);display:inline-flex;align-items:center;gap:6px}
+.mic-btn.listening{background:var(--wrong);color:#fff;border-color:var(--wrong);animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+.finale{text-align:center;padding:clamp(20px,4vw,40px)}
+.finale h3{font-weight:700;font-size:clamp(32px,6vw,64px);letter-spacing:-.03em;margin-bottom:14px}
+.finale p{font-weight:700;font-size:clamp(16px,2.2vw,22px);color:var(--ink-dim);margin-bottom:24px}
+.finale.pass h3{color:var(--right)}
+.finale.tryagain h3{color:var(--wrong)}
 
-:focus-visible{outline:3px solid var(--accent2);outline-offset:3px}
-@media (max-width:860px){
+/* VIDEO MODAL */
+.video-modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.85);z-index:100;animation:fadeIn .3s ease}
+.video-modal.show{display:flex;align-items:center;justify-content:center}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.video-wrapper{background:var(--panel);border-radius:20px;overflow:hidden;width:90vw;max-width:900px;max-height:90vh;display:flex;flex-direction:column}
+.video-close{position:absolute;top:20px;right:20px;background:var(--accent);color:var(--accent-ink);border:none;border-radius:50%;width:50px;height:50px;font-size:24px;cursor:pointer;font-weight:700;z-index:101}
+.video-player{position:relative;width:100%;padding-bottom:56.25%;height:0;background:#000}
+.video-player iframe{position:absolute;top:0;left:0;width:100%;height:100%}
+.video-title{padding:clamp(14px,2vw,20px);background:var(--panel);color:var(--ink);font-weight:700;font-size:clamp(16px,2vw,22px);letter-spacing:-.01em;text-align:center}
+
+.watch-btn{background:var(--reading);color:var(--reading-ink);border:none;border-radius:999px;font-weight:700;font-size:clamp(13px,1.6vw,16px);padding:10px 18px;cursor:pointer;letter-spacing:-.01em;font-family:var(--font);display:inline-flex;align-items:center;gap:6px;margin-top:12px}
+
+/* DEVOTIONS */
+.devotion-card{background:var(--panel2);border-radius:18px;padding:clamp(20px,3vw,32px);text-align:center;margin-bottom:16px;border:2px solid transparent;transition:.15s}
+.devotion-card:hover{border-color:var(--accent)}
+.devotion-prayer{font-weight:700;font-size:clamp(20px,3.2vw,32px);letter-spacing:-.02em;line-height:1.5;color:var(--ink);margin-bottom:16px}
+.devotion-buttons{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.play-btn{background:var(--accent);color:var(--accent-ink);border:none;border-radius:999px;font-weight:700;font-size:clamp(14px,1.8vw,18px);padding:12px 22px;cursor:pointer;letter-spacing:-.01em;font-family:var(--font);display:inline-flex;align-items:center;gap:6px}
+
+@media (max-width:820px){
   .today-grid{grid-template-columns:1fr}
   .seasons{grid-template-columns:repeat(2,1fr)}
   .opts{grid-template-columns:1fr}
   .ribbon{grid-template-columns:repeat(6,1fr)}
+  .coinrow{grid-template-columns:repeat(2,1fr)}
+  .tiles{grid-template-columns:1fr}
+  .tile{aspect-ratio:2/1}
+  .clock-grid{grid-template-columns:1fr}
 }
-@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
-<body>
-<div class="wrap">
+<body data-subject="home">
 
-  <div class="topbar">
-    <div class="mark">Learning Board <span>/ Time</span></div>
-    <div class="seasonpill" id="seasonPill">Summer</div>
-    <button class="speak" id="speakBtn" type="button">🔊 Read it out loud</button>
+<div class="screen on" id="screen-home">
+  <div class="wrap">
+    <div class="home-head">
+      <h1>Learning Board</h1>
+      <p>Pick something to learn!</p>
+    </div>
+    <div class="tiles">
+      <button class="tile time" data-open="time">
+        <span class="tile-icon">📅</span>
+        <span class="tile-name">Time &amp; Calendar</span>
+      </button>
+      <button class="tile clock" data-open="clock">
+        <span class="tile-icon">🕐</span>
+        <span class="tile-name">Clock</span>
+      </button>
+      <button class="tile money" data-open="money">
+        <span class="tile-icon">💰</span>
+        <span class="tile-name">Money</span>
+      </button>
+      <button class="tile devotion" data-open="devotion">
+        <span class="tile-icon">🙏</span>
+        <span class="tile-name">Devotions</span>
+      </button>
+      <div class="tile soon">
+        <span class="soon-label">Coming Soon</span>
+        <span class="tile-icon">📖</span>
+        <span class="tile-name">Reading</span>
+      </div>
+      <div class="tile soon">
+        <span class="soon-label">Coming Soon</span>
+        <span class="tile-icon">🗺️</span>
+        <span class="tile-name">States</span>
+      </div>
+    </div>
   </div>
+</div>
 
-  <div class="tabs" role="tablist">
-    <button class="tab" role="tab" aria-selected="true" data-p="today">Today</button>
-    <button class="tab" role="tab" aria-selected="false" data-p="week">Days of the Week</button>
-    <button class="tab" role="tab" aria-selected="false" data-p="month">This Month</button>
-    <button class="tab" role="tab" aria-selected="false" data-p="year">Months &amp; Seasons</button>
-    <button class="tab" role="tab" aria-selected="false" data-p="practice">Practice</button>
-  </div>
-
-  <!-- TODAY -->
-  <section class="panel on" id="p-today">
-    <div class="today-grid">
+<div class="screen" id="screen-time">
+  <div class="wrap">
+    <nav class="topnav">
+      <button class="home-btn" data-home>← Home</button>
+      <div class="subject-title">📅 Time &amp; Calendar</div>
+      <button class="speak-btn top" id="speak-time">🔊 Read Aloud</button>
+    </nav>
+    <div class="tabs" role="tablist" data-tabs="time">
+      <button class="tab" role="tab" aria-selected="true" data-tab="today">Today</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="week">Days of the Week</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="month">This Month</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="year">Months &amp; Seasons</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="how">How Time Works</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="tpractice">Practice</button>
+    </div>
+    <div class="panel on" data-panel="today">
       <div class="card">
-        <div class="eyebrow">Today is</div>
-        <div class="bigday" id="todayName">—</div>
-        <div class="bigdate" id="todayFull">—</div>
+        <div class="today-grid">
+          <div>
+            <div class="eyebrow">Today is</div>
+            <div class="bigday" id="todayName">—</div>
+            <div class="bigdate" id="todayFull">—</div>
+          </div>
+          <div class="neighbors">
+            <div class="nb"><small>Yesterday was</small><b id="yName">—</b></div>
+            <div class="nb"><small>Tomorrow will be</small><b id="tName">—</b></div>
+            <div class="nb"><small>The season is</small><b id="sName">—</b></div>
+          </div>
+        </div>
       </div>
-      <div class="neighbors">
-        <div class="nb"><small>Yesterday was</small><b id="yName">—</b></div>
-        <div class="nb"><small>Tomorrow will be</small><b id="tName">—</b></div>
-        <div class="nb"><small>Right now the season is</small><b id="sName">—</b></div>
+      <div class="card">
+        <div class="eyebrow">🎂 Birthdays — tap to hear</div>
+        <div class="birthdays" id="birthdayGrid"></div>
       </div>
     </div>
-  </section>
+    <div class="panel" data-panel="week">
+      <div class="card">
+        <div class="eyebrow">7 days make one week — tap a day</div>
+        <div class="weekstrip" id="weekStrip"></div>
+        <div class="readout" id="weekRead">Tap a day to learn about it.</div>
+      </div>
+      <div class="card">
+        <div class="eyebrow">📺 Watch it in action</div>
+        <button class="watch-btn" onclick="playVideo('cZeifDSpCGI','The Rhythm of Our Week')">📺 Watch Video</button>
+      </div>
+    </div>
+    <div class="panel" data-panel="month">
+      <div class="card">
+        <div class="calhead"><h2 id="monthTitle">—</h2><p id="monthFacts">—</p></div>
+        <div class="cal" id="calGrid"></div>
+      </div>
+    </div>
+    <div class="panel" data-panel="year">
+      <div class="card">
+        <div class="eyebrow">12 months make one year — tap a month</div>
+        <div class="ribbon" id="ribbon"></div>
+        <div class="readout" id="yearRead">Tap a month to learn about it.</div>
+      </div>
+      <div class="card">
+        <div class="eyebrow">📺 Watch the months</div>
+        <button class="watch-btn" onclick="playVideo('TSrJYOu3ORQ','The Months of the Year')">📺 Watch Video</button>
+      </div>
+      <div class="card">
+        <div class="eyebrow">4 seasons make one year</div>
+        <div class="seasons" id="seasonGrid"></div>
+      </div>
+      <div class="card">
+        <div class="eyebrow">📺 Watch the seasons</div>
+        <button class="watch-btn" onclick="playVideo('2B2BoYF5WMo','Season Detectives')">📺 Watch Video</button>
+      </div>
+    </div>
+    <div class="panel" data-panel="how">
+      <div class="card">
+        <div class="eyebrow">How time fits together — tap to see a video</div>
+        <div class="ladder" id="timeLadder"></div>
+      </div>
+    </div>
+    <div class="panel" data-panel="tpractice">
+      <div class="card" id="quiz-time"></div>
+    </div>
+  </div>
+</div>
 
-  <!-- WEEK -->
-  <section class="panel" id="p-week">
+<div class="screen" id="screen-clock">
+  <div class="wrap">
+    <nav class="topnav">
+      <button class="home-btn" data-home>← Home</button>
+      <div class="subject-title">🕐 Clock</div>
+      <button class="speak-btn top" id="speak-clock">🔊 Read Aloud</button>
+    </nav>
+    <div class="tabs" role="tablist" data-tabs="clock">
+      <button class="tab" role="tab" aria-selected="true" data-tab="now">Now</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="analog">Analog Clock</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="digital">Digital Clock</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="match">Match Times</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="cpractice">Practice</button>
+    </div>
+    <div class="panel on" data-panel="now">
+      <div class="card">
+        <div class="clock-grid">
+          <div class="clock-display">
+            <div class="analog-wrap">
+              <div class="analog-clock">
+                <div class="hand hour" id="hourHand"></div>
+                <div class="hand minute" id="minuteHand"></div>
+                <div class="clock-center"></div>
+                <div class="clock-numbers">
+                  <div class="clock-num n12"><span>12</span></div>
+                  <div class="clock-num n1"><span>1</span></div>
+                  <div class="clock-num n2"><span>2</span></div>
+                  <div class="clock-num n3"><span>3</span></div>
+                  <div class="clock-num n4"><span>4</span></div>
+                  <div class="clock-num n5"><span>5</span></div>
+                  <div class="clock-num n6"><span>6</span></div>
+                  <div class="clock-num n7"><span>7</span></div>
+                  <div class="clock-num n8"><span>8</span></div>
+                  <div class="clock-num n9"><span>9</span></div>
+                  <div class="clock-num n10"><span>10</span></div>
+                  <div class="clock-num n11"><span>11</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="time-label">Analog Clock (with hands)</div>
+          </div>
+          <div class="clock-display">
+            <div class="digital-time" id="digitalTime">12:00</div>
+            <div class="time-label">Digital Time (like your phone)</div>
+            <div class="clock-info">
+              <h3>Right now:</h3>
+              <p id="timeRead">The time is 12:00.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="panel" data-panel="analog">
+      <div class="card">
+        <div class="eyebrow">The analog clock has hands that move</div>
+        <div class="clock-grid">
+          <div class="clock-display">
+            <div class="analog-wrap">
+              <div class="analog-clock">
+                <div class="hand hour" id="hourHand2"></div>
+                <div class="hand minute" id="minuteHand2"></div>
+                <div class="clock-center"></div>
+                <div class="clock-numbers">
+                  <div class="clock-num n12"><span>12</span></div>
+                  <div class="clock-num n1"><span>1</span></div>
+                  <div class="clock-num n2"><span>2</span></div>
+                  <div class="clock-num n3"><span>3</span></div>
+                  <div class="clock-num n4"><span>4</span></div>
+                  <div class="clock-num n5"><span>5</span></div>
+                  <div class="clock-num n6"><span>6</span></div>
+                  <div class="clock-num n7"><span>7</span></div>
+                  <div class="clock-num n8"><span>8</span></div>
+                  <div class="clock-num n9"><span>9</span></div>
+                  <div class="clock-num n10"><span>10</span></div>
+                  <div class="clock-num n11"><span>11</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="clock-info">
+            <h3>👉 The short hand shows HOURS</h3>
+            <p>It's called the hour hand. It points to the number for the hour.</p>
+            <h3 style="margin-top:20px">👉 The long hand shows MINUTES</h3>
+            <p>It's called the minute hand. It's longer and moves around to show how many minutes.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="panel" data-panel="digital">
+      <div class="card">
+        <div class="eyebrow">Digital time is like your phone or oven</div>
+        <div style="text-align:center;margin:30px 0">
+          <div class="digital-time" id="digitalTime2">12:00</div>
+          <div style="margin-top:20px;font-weight:700;font-size:clamp(16px,2.2vw,20px);color:var(--ink-dim)">
+            The left number is the HOUR. The right number is the MINUTES.
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="panel" data-panel="match">
+      <div class="card" id="match-quiz"></div>
+    </div>
+    <div class="panel" data-panel="cpractice">
+      <div class="card" id="quiz-clock"></div>
+    </div>
+  </div>
+</div>
+
+<div class="screen" id="screen-money">
+  <div class="wrap">
+    <nav class="topnav">
+      <button class="home-btn" data-home>← Home</button>
+      <div class="subject-title">💰 Money</div>
+      <button class="speak-btn top" id="speak-money">🔊 Read Aloud</button>
+    </nav>
+    <div class="tabs" role="tablist" data-tabs="money">
+      <button class="tab" role="tab" aria-selected="true" data-tab="coins">Coins</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="bills">Dollar Bills</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="count">Counting Money</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="mpractice">Practice</button>
+    </div>
+    <div class="panel on" data-panel="coins">
+      <div class="card">
+        <div class="eyebrow">Tap a coin to hear its name and value</div>
+        <div class="coinrow" id="coinRow"></div>
+        <div class="readout" id="coinRead" style="margin-top:22px">Tap a coin above to learn about it.</div>
+      </div>
+    </div>
+    <div class="panel" data-panel="bills">
+      <div class="card">
+        <div class="eyebrow">Tap a bill to hear its name and value</div>
+        <div class="billrow" id="billRow"></div>
+        <div class="readout" id="billRead" style="margin-top:22px">Tap a bill above to learn about it.</div>
+      </div>
+    </div>
+    <div class="panel" data-panel="count">
+      <div class="card">
+        <div class="eyebrow">How much money is this?</div>
+        <div class="countbox" id="countBox"></div>
+        <div style="text-align:center;margin-top:20px"><button class="next-btn" id="countNew" type="button">Show me another →</button></div>
+        <div class="readout" id="countRead" style="margin-top:22px;text-align:center">Count all the coins to find the total.</div>
+      </div>
+    </div>
+    <div class="panel" data-panel="mpractice">
+      <div class="card" id="quiz-money"></div>
+    </div>
+  </div>
+</div>
+
+<div class="screen" id="screen-devotion">
+  <div class="wrap">
+    <nav class="topnav">
+      <button class="home-btn" data-home>← Home</button>
+      <div class="subject-title">🙏 Devotions</div>
+      <button class="speak-btn top" id="speak-devotion">🔊 Read Aloud</button>
+    </nav>
     <div class="card">
-      <div class="eyebrow">7 days make one week — tap a day</div>
-      <div class="weekstrip" id="weekStrip"></div>
-      <div class="readout" id="weekRead">Tap a day to learn about it.</div>
-    </div>
-  </section>
-
-  <!-- MONTH -->
-  <section class="panel" id="p-month">
-    <div class="card">
-      <div class="calhead">
-        <h2 id="monthTitle">—</h2>
-        <p id="monthFacts">—</p>
-      </div>
-      <div class="cal" id="calGrid"></div>
-    </div>
-  </section>
-
-  <!-- YEAR -->
-  <section class="panel" id="p-year">
-    <div class="card" style="margin-bottom:16px">
-      <div class="eyebrow">12 months make one year — tap a month</div>
-      <div class="ribbon" id="ribbon"></div>
-      <div class="readout" id="yearRead">Tap a month to learn about it.</div>
-      <div class="legend">
-        <span><i class="dot" style="background:#A6E86B"></i>Spring</span>
-        <span><i class="dot" style="background:#FFC94A"></i>Summer</span>
-        <span><i class="dot" style="background:#FF9F45"></i>Fall</span>
-        <span><i class="dot" style="background:#8FD3FF"></i>Winter</span>
+      <div class="eyebrow">Grace at the Table</div>
+      <div class="devotion-card">
+        <div class="devotion-prayer" id="graceText">Loading prayer...</div>
+        <div class="devotion-buttons">
+          <button class="play-btn" onclick="sayDevotionText(document.getElementById('graceText').textContent,'grace')">🔊 Say Prayer</button>
+          <button class="watch-btn" onclick="playVideo('jBSbm-44UKk','Grace at the Table - A Child\'s Prayer of Gratitude')">📺 Watch Video</button>
+        </div>
       </div>
     </div>
     <div class="card">
-      <div class="eyebrow">4 seasons make one year</div>
-      <div class="seasons" id="seasonGrid"></div>
-    </div>
-  </section>
-
-  <!-- PRACTICE -->
-  <section class="panel" id="p-practice">
-    <div class="card">
-      <div class="eyebrow">Practice</div>
-      <div class="q" id="qText">—</div>
-      <div class="opts" id="qOpts"></div>
-      <div class="scorebar">
-        <div class="score">Score: <b id="scoreNum">0</b> / <span id="scoreTot">0</span></div>
-        <button class="next" id="nextBtn" type="button" hidden>Next question →</button>
+      <div class="eyebrow">Bedtime Prayer</div>
+      <div class="devotion-card">
+        <div class="devotion-prayer" id="bedtimeText">Loading prayer...</div>
+        <div class="devotion-buttons">
+          <button class="play-btn" onclick="sayDevotionText(document.getElementById('bedtimeText').textContent,'bedtime')">🔊 Say Prayer</button>
+          <button class="watch-btn" onclick="playVideo('xq3rc-rFv8M','Kids Night Prayer - A Peaceful Bedtime Routine')">📺 Watch Video</button>
+        </div>
       </div>
     </div>
-  </section>
+    <div class="card">
+      <div class="eyebrow">Morning Thought</div>
+      <div class="devotion-card" style="opacity:.5">
+        <div class="devotion-prayer">Coming Soon 🌅</div>
+      </div>
+    </div>
+  </div>
+</div>
 
+<!-- VIDEO MODAL -->
+<div class="video-modal" id="videoModal">
+  <button class="video-close" onclick="closeVideo()">✕</button>
+  <div class="video-wrapper">
+    <div class="video-player">
+      <iframe id="videoFrame" allow="autoplay" frameborder="0" allowfullscreen></iframe>
+    </div>
+    <div class="video-title" id="videoTitle">Video</div>
+  </div>
 </div>
 
 <script>
 (function(){
-  "use strict";
+"use strict";
+function $(s,r){return (r||document).querySelector(s)}
+function $$(s,r){return [].slice.call((r||document).querySelectorAll(s))}
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+function pick(arr,not){var v;do{v=arr[Math.floor(Math.random()*arr.length)]}while(v===not);return v}
 
-  var DAYS=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-  var DABBR=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
-  var MONTHS=["January","February","March","April","May","June","July","August","September","October","November","December"];
-  var MABBR=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-  var SEASON_OF=["winter","winter","spring","spring","spring","summer","summer","summer","fall","fall","fall","winter"];
-  var SEASON_NAME={spring:"Spring",summer:"Summer",fall:"Fall",winter:"Winter"};
+/* VOICE: Auto-select best available voice */
+function getBestVoice(){
+  var voices=window.speechSynthesis.getVoices();
+  var prefs=['Google US English','Google','Microsoft Aria','Microsoft Zira','Samantha','Karen','Victoria','Alex'];
+  for(var p=0;p<prefs.length;p++){
+    for(var i=0;i<voices.length;i++){
+      if(voices[i].name.indexOf(prefs[p])>-1) return voices[i];
+    }
+  }
+  return voices.length>0?voices[0]:null;
+}
 
-  var SEASONS=[
-    {k:"spring",icon:"🌱",name:"Spring",months:"March · April · May",blurb:"Plants start to grow. Rain falls, flowers open, and baby animals are born."},
-    {k:"summer",icon:"☀️",name:"Summer",months:"June · July · August",blurb:"The hottest season. Days are long and the sun stays up late."},
-    {k:"fall",  icon:"🍂",name:"Fall",  months:"September · October · November",blurb:"Leaves change color and fall down. The air gets cooler."},
-    {k:"winter",icon:"❄️",name:"Winter",months:"December · January · February",blurb:"The coldest season. Days are short and many places get snow."}
-  ];
+function say(text, onEnd){
+  if(!("speechSynthesis" in window)){ if(onEnd) onEnd(); return; }
+  window.speechSynthesis.cancel();
+  var done=false;
+  var finish=function(){ if(done) return; done=true; if(onEnd) onEnd(); };
+  var u=new SpeechSynthesisUtterance(text);
+  u.rate=.85; u.pitch=1.05; u.lang="en-US";
+  var bestVoice=getBestVoice();
+  if(bestVoice) u.voice=bestVoice;
+  u.onend=finish; u.onerror=finish;
+  var estimated = Math.max(1500, text.length*80);
+  setTimeout(finish, estimated+1500);
+  setTimeout(function(){ window.speechSynthesis.speak(u); }, 60);
+}
+function stopSay(){
+  if("speechSynthesis" in window) window.speechSynthesis.cancel();
+}
 
-  var DAYFACT=[
-    "Sunday is the first day of the week on a calendar. It is part of the weekend.",
-    "Monday comes after Sunday. It is usually the first school day.",
-    "Tuesday is the second school day of the week.",
-    "Wednesday is right in the middle of the week.",
-    "Thursday comes just before Friday.",
-    "Friday is the last school day. The weekend starts next.",
-    "Saturday is part of the weekend. No school today."
-  ];
+var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+function listenOnce(onResult,onEnd){
+  if(!SR){onEnd&&onEnd(false);return null}
+  try{
+    var r=new SR(); r.lang="en-US"; r.continuous=false; r.interimResults=false; r.maxAlternatives=3;
+    r.onresult=function(e){
+      var alts=[];
+      for(var i=0;i<e.results[0].length;i++) alts.push(e.results[0][i].transcript.toLowerCase().trim());
+      onResult(alts);
+    };
+    r.onerror=function(){onEnd&&onEnd(false)};
+    r.onend=function(){onEnd&&onEnd(true)};
+    r.start(); return r;
+  }catch(e){onEnd&&onEnd(false);return null}
+}
 
-  var now=new Date();
-  var todayIdx=now.getDay();
-  var seasonKey=SEASON_OF[now.getMonth()];
-  document.body.setAttribute("data-season",seasonKey);
-  document.getElementById("seasonPill").textContent=SEASON_NAME[seasonKey];
+function playVideo(videoId, title){
+  $("#videoFrame").src="https://www.youtube.com/embed/"+videoId+"?autoplay=1&rel=0";
+  $("#videoTitle").textContent=title;
+  $("#videoModal").classList.add("show");
+}
+function closeVideo(){
+  $("#videoModal").classList.remove("show");
+  $("#videoFrame").src="";
+}
 
-  function daysInMonth(y,m){return new Date(y,m+1,0).getDate();}
-  function ordinal(n){var s=["th","st","nd","rd"],v=n%100;return n+(s[(v-20)%10]||s[v]||s[0]);}
+function sayDevotionText(text, context){
+  say(text);
+}
 
-  /* ---- TODAY ---- */
+/* CLOCK UPDATES */
+function updateClock(){
+  var now=new Date(), h=now.getHours(), m=now.getMinutes();
+  var mm=String(m).padStart(2,'0');
+  var display=h>12?h-12:(h===0?12:h);
+  var displayH=String(display).padStart(2,'0');
+  var ampm=(h>=12?"PM":"AM");
+  var hDeg=30*h+.5*m, mDeg=6*m;
+  $$(".hand.hour").forEach(function(e){e.style.transform="translateX(-50%) rotate("+hDeg+"deg)"});
+  $$(".hand.minute").forEach(function(e){e.style.transform="translateX(-50%) rotate("+mDeg+"deg)"});
+  $$(".digital-time").forEach(function(e){e.innerHTML=displayH+":"+mm+" <span style=\"font-size:.6em;font-weight:700\">"+ampm+"</span>"});
+  $("#timeRead").textContent="The time is "+display+":"+mm+" "+ampm+".";
+}
+window.setInterval(updateClock, 1000);
+updateClock();
+
+function goto(id){
+  stopReadingSequence();
+  stopSay();
+  closeVideo();
+  $$(".screen").forEach(function(s){s.classList.remove("on")});
+  $("#screen-"+id).classList.add("on");
+  document.body.setAttribute("data-subject", id);
+  window.scrollTo(0,0);
+}
+$$(".tile[data-open]").forEach(function(b){ b.addEventListener("click",function(){goto(b.dataset.open)}); });
+$$("[data-home]").forEach(function(b){ b.addEventListener("click",function(){goto("home")}); });
+
+$$("[data-tabs]").forEach(function(tabs){
+  var scope=tabs.parentElement;
+  $$(".tab",tabs).forEach(function(t){
+    t.addEventListener("click",function(){
+      stopReadingSequence();
+      stopSay();
+      $$(".tab",tabs).forEach(function(x){x.setAttribute("aria-selected","false")});
+      t.setAttribute("aria-selected","true");
+      $$(".panel",scope).forEach(function(p){p.classList.remove("on")});
+      $('.panel[data-panel="'+t.dataset.tab+'"]',scope).classList.add("on");
+      if(t.dataset.tab==="tpractice") startQuiz("time");
+      if(t.dataset.tab==="mpractice") startQuiz("money");
+      if(t.dataset.tab==="cpractice") startQuiz("clock");
+      if(t.dataset.tab==="count") newCountRound();
+      if(t.dataset.tab==="match") buildMatchQuiz();
+    });
+  });
+});
+
+var DAYS=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+var DABBR=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+var MONTHS=["January","February","March","April","May","June","July","August","September","October","November","December"];
+var MABBR=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+var SEASON_OF=["winter","winter","spring","spring","spring","summer","summer","summer","fall","fall","fall","winter"];
+var SEASON_NAME={spring:"Spring",summer:"Summer",fall:"Fall",winter:"Winter"};
+var SEASON_ICON={spring:"🌱",summer:"☀️",fall:"🍂",winter:"❄️"};
+var SEASONS=[
+  {k:"spring",icon:"🌱",name:"Spring",months:"March, April, May",blurb:"Plants start to grow. Flowers open, and baby animals are born."},
+  {k:"summer",icon:"☀️",name:"Summer",months:"June, July, August",blurb:"The hottest season. Days are long and the sun stays up late."},
+  {k:"fall",icon:"🍂",name:"Fall",months:"September, October, November",blurb:"Leaves change color and fall down. The air gets cooler."},
+  {k:"winter",icon:"❄️",name:"Winter",months:"December, January, February",blurb:"The coldest season. Days are short. Some places get snow."}
+];
+var DAYFACT=[
+  "Sunday is the first day of the week and part of the weekend.",
+  "Monday comes after Sunday. For most people, Monday through Friday are work and school days — usually 9 in the morning to 3 in the afternoon for kids, and until about 5 for grown-ups.",
+  "Tuesday is a work and school day for most people.",
+  "Wednesday is right in the middle of the week.",
+  "Thursday comes just before Friday.",
+  "Friday is the last work and school day. The weekend starts next.",
+  "Saturday is part of the weekend. In our family, Saturday is also Sabbath — a special day of rest and worship."
+];
+
+var BIRTHDAYS=[
+  {name:"Faith",month:1,day:14,birthYear:2020},
+  {name:"TJ",   month:2,day:2, birthYear:2018}
+];
+
+/* DEVOTION TEXTS */
+var DEVOTIONS={
+  grace:"Thank you for this food. Thank you for my family. Thank you for this day. In Jesus' name, Amen.",
+  bedtime:"Thank you God for today. Thank you for keeping me safe. Help me sleep well. Good night. In Jesus' name, Amen."
+};
+
+function daysInMonth(y,m){return new Date(y,m+1,0).getDate()}
+function ord(n){var s=["th","st","nd","rd"],v=n%100;return n+(s[(v-20)%10]||s[v]||s[0])}
+
+function birthdayInfo(month, day, birthYear){
+  var today=new Date(); today.setHours(0,0,0,0);
+  var thisYear=today.getFullYear();
+  var thisBday=new Date(thisYear, month-1, day);
+  var next = (thisBday >= today) ? thisBday : new Date(thisYear+1, month-1, day);
+  var daysUntil=Math.round((next-today)/86400000);
+  var currentAge = thisYear - birthYear - (thisBday > today ? 1 : 0);
+  var nextAge = currentAge + 1;
+  return {daysUntil:daysUntil, currentAge:currentAge, nextAge:nextAge, isToday:daysUntil===0};
+}
+
+function initTime(){
+  var now=new Date(), todayIdx=now.getDay(), seasonKey=SEASON_OF[now.getMonth()];
+  var y=now.getFullYear(), m=now.getMonth();
   var yest=new Date(now); yest.setDate(now.getDate()-1);
   var tmrw=new Date(now); tmrw.setDate(now.getDate()+1);
-  document.getElementById("todayName").textContent=DAYS[todayIdx];
-  document.getElementById("todayFull").textContent=MONTHS[now.getMonth()]+" "+ordinal(now.getDate())+", "+now.getFullYear();
-  document.getElementById("yName").textContent=DAYS[yest.getDay()];
-  document.getElementById("tName").textContent=DAYS[tmrw.getDay()];
-  document.getElementById("sName").textContent=SEASON_NAME[seasonKey];
+  $("#todayName").textContent=DAYS[todayIdx];
+  $("#todayFull").textContent=MONTHS[m]+" "+ord(now.getDate())+", "+y;
+  $("#yName").textContent=DAYS[yest.getDay()];
+  $("#tName").textContent=DAYS[tmrw.getDay()];
+  $("#sName").textContent=SEASON_NAME[seasonKey];
 
-  /* ---- WEEK ---- */
-  var strip=document.getElementById("weekStrip");
-  var weekRead=document.getElementById("weekRead");
+  var bg=$("#birthdayGrid");
+  BIRTHDAYS.forEach(function(kid){
+    var info=birthdayInfo(kid.month,kid.day,kid.birthYear);
+    var b=document.createElement("button");
+    b.type="button"; b.className="bday"+(info.isToday?" today":"");
+    var countText = info.isToday ? "🎉 TODAY!" :
+                    info.daysUntil===1 ? "Tomorrow!" :
+                    info.daysUntil+" days away";
+    b.innerHTML=
+      '<div class="bday-icon">'+(info.isToday?'🎉🎂🎉':'🎂')+'</div>'+
+      '<div class="bday-name">'+kid.name+'</div>'+
+      '<div class="bday-age">'+(info.isToday?'Turns '+info.nextAge+' today!':'Turns '+info.nextAge)+'</div>'+
+      '<div class="bday-date">'+MONTHS[kid.month-1]+' '+ord(kid.day)+'</div>'+
+      '<div class="bday-count">'+countText+'</div>';
+    b.addEventListener("click",function(){
+      var msg;
+      if(info.isToday){
+        msg="Today is "+kid.name+"'s birthday! Happy birthday "+kid.name+"! "+kid.name+" is "+info.nextAge+" years old today!";
+      } else if(info.daysUntil===1){
+        msg="Tomorrow is "+kid.name+"'s birthday! "+kid.name+" will turn "+info.nextAge+" tomorrow.";
+      } else {
+        msg=kid.name+"'s birthday is "+MONTHS[kid.month-1]+" "+kid.day+". "+kid.name+" is "+info.currentAge+" years old and will turn "+info.nextAge+" in "+info.daysUntil+" days.";
+      }
+      say(msg);
+    });
+    bg.appendChild(b);
+  });
+
+  var strip=$("#weekStrip"), weekRead=$("#weekRead");
   DAYS.forEach(function(d,i){
     var b=document.createElement("button");
-    b.type="button"; b.className="daybtn";
-    if(i===todayIdx) b.classList.add("is-today");
-    if(i===0||i===6) b.classList.add("is-weekend");
+    b.type="button"; b.className="daybtn"+(i===todayIdx?" is-today":"");
     b.innerHTML='<div class="abbr">'+DABBR[i]+'</div><div class="num">Day '+(i+1)+'</div>';
     b.addEventListener("click",function(){
       var after=DAYS[(i+1)%7], before=DAYS[(i+6)%7];
@@ -343,132 +809,421 @@ body::before{
     strip.appendChild(b);
   });
 
-  /* ---- MONTH ---- */
-  var y=now.getFullYear(), m=now.getMonth(), dim=daysInMonth(y,m), first=new Date(y,m,1).getDay();
-  document.getElementById("monthTitle").textContent=MONTHS[m]+" "+y;
-  document.getElementById("monthFacts").textContent=MONTHS[m]+" is month "+(m+1)+" of 12. It has "+dim+" days.";
-  var grid=document.getElementById("calGrid");
-  DABBR.forEach(function(a){var e=document.createElement("div");e.className="dow";e.textContent=a;grid.appendChild(e);});
-  for(var i=0;i<first;i++){var b=document.createElement("div");b.className="cell blank";grid.appendChild(b);}
+  var dim=daysInMonth(y,m), first=new Date(y,m,1).getDay();
+  $("#monthTitle").textContent=MONTHS[m]+" "+y;
+  $("#monthFacts").textContent=MONTHS[m]+" is month "+(m+1)+" of 12. It has "+dim+" days.";
+  var grid=$("#calGrid");
+  DABBR.forEach(function(a){var e=document.createElement("div");e.className="dow";e.textContent=a;grid.appendChild(e)});
+  for(var i=0;i<first;i++){var b=document.createElement("div");b.className="cell blank";grid.appendChild(b)}
+  var bdayDays={};
+  BIRTHDAYS.forEach(function(k){ if(k.month-1===m) bdayDays[k.day]=true; });
   for(var d=1;d<=dim;d++){
     var c=document.createElement("div"); c.className="cell"; c.textContent=d;
     if(d===now.getDate()) c.classList.add("today");
     else if(d<now.getDate()) c.classList.add("past");
+    if(bdayDays[d]) c.classList.add("bday");
     grid.appendChild(c);
   }
 
-  /* ---- YEAR RIBBON ---- */
-  var rib=document.getElementById("ribbon"), yearRead=document.getElementById("yearRead");
+  var rib=$("#ribbon"), yr=$("#yearRead");
   MONTHS.forEach(function(mo,i){
     var b=document.createElement("button");
     b.type="button"; b.className="mo"+(i===m?" now":"");
-    b.setAttribute("data-s",SEASON_OF[i]);
     b.innerHTML='<div class="mabbr">'+MABBR[i]+'</div><div class="mnum">'+(i+1)+'</div>';
     b.addEventListener("click",function(){
-      var txt=mo+" is month "+(i+1)+" of 12. It has "+daysInMonth(y,i)+" days, and it is in "+SEASON_NAME[SEASON_OF[i]]+".";
-      yearRead.innerHTML='<em>'+mo+'</em> is month '+(i+1)+' of 12. It has <em>'+daysInMonth(y,i)+' days</em>, and it is in <em>'+SEASON_NAME[SEASON_OF[i]]+'</em>.';
-      say(txt);
+      var t=mo+" is month "+(i+1)+" of 12. It has "+daysInMonth(y,i)+" days, and it is in "+SEASON_NAME[SEASON_OF[i]]+".";
+      var kidsThisMonth = BIRTHDAYS.filter(function(k){return k.month-1===i});
+      if(kidsThisMonth.length){
+        t += " " + kidsThisMonth.map(function(k){return k.name+"'s birthday is in "+mo+"!"}).join(" ");
+      }
+      yr.innerHTML='<em>'+mo+'</em> is month '+(i+1)+' of 12. It has <em>'+daysInMonth(y,i)+'</em> days, and it is in <em>'+SEASON_NAME[SEASON_OF[i]]+'</em>.'+
+        (kidsThisMonth.length?' 🎂 '+kidsThisMonth.map(function(k){return '<em>'+k.name+"'s</em> birthday!"}).join(' '):'');
+      say(t);
     });
     rib.appendChild(b);
   });
 
-  /* ---- SEASONS ---- */
-  var sg=document.getElementById("seasonGrid");
+  var sg=$("#seasonGrid");
   SEASONS.forEach(function(s){
     var b=document.createElement("button");
     b.type="button"; b.className="sea"+(s.k===seasonKey?" now":"");
     b.innerHTML='<span class="icon">'+s.icon+'</span><h3>'+s.name+'</h3><p><strong>'+s.months+'</strong><br>'+s.blurb+'</p>';
-    b.addEventListener("click",function(){ say(s.name+". The months are "+s.months.replace(/·/g,",")+". "+s.blurb); });
+    b.addEventListener("click",function(){ say(s.name+". The months are "+s.months+". "+s.blurb); });
     sg.appendChild(b);
   });
 
-  /* ---- TABS ---- */
-  var tabs=[].slice.call(document.querySelectorAll(".tab"));
-  tabs.forEach(function(t){
-    t.addEventListener("click",function(){
-      tabs.forEach(function(x){x.setAttribute("aria-selected","false");});
-      t.setAttribute("aria-selected","true");
-      document.querySelectorAll(".panel").forEach(function(p){p.classList.remove("on");});
-      document.getElementById("p-"+t.dataset.p).classList.add("on");
-      if(t.dataset.p==="practice") newQuestion();
-    });
-  });
-
-  /* ---- SPEAK ---- */
-  function say(text){
-    if(!("speechSynthesis" in window)) return;
-    window.speechSynthesis.cancel();
-    var u=new SpeechSynthesisUtterance(text);
-    u.rate=.85; u.pitch=1.05;
-    window.speechSynthesis.speak(u);
-  }
-  document.getElementById("speakBtn").addEventListener("click",function(){
-    var open=document.querySelector(".tab[aria-selected='true']").dataset.p;
-    if(open==="today"){
-      say("Today is "+DAYS[todayIdx]+", "+MONTHS[now.getMonth()]+" "+now.getDate()+", "+now.getFullYear()+
-          ". Yesterday was "+DAYS[yest.getDay()]+". Tomorrow will be "+DAYS[tmrw.getDay()]+
-          ". The season is "+SEASON_NAME[seasonKey]+".");
-    } else if(open==="week"){
-      say("There are seven days in a week. "+DAYS.join(", ")+".");
-    } else if(open==="month"){
-      say("This month is "+MONTHS[m]+". It has "+dim+" days. Today is the "+ordinal(now.getDate())+".");
-    } else if(open==="year"){
-      say("There are twelve months in a year. "+MONTHS.join(", ")+". And there are four seasons: Spring, Summer, Fall, and Winter.");
-    } else {
-      say(document.getElementById("qText").textContent);
-    }
-  });
-
-  /* ---- PRACTICE ---- */
-  var score=0,total=0;
-  var qText=document.getElementById("qText"),qOpts=document.getElementById("qOpts");
-  var scoreNum=document.getElementById("scoreNum"),scoreTot=document.getElementById("scoreTot");
-  var nextBtn=document.getElementById("nextBtn");
-
-  function pick(arr,not){var v;do{v=arr[Math.floor(Math.random()*arr.length)];}while(v===not);return v;}
-  function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
-
-  var MAKERS=[
-    function(){var i=Math.floor(Math.random()*7);return{q:"What day comes AFTER "+DAYS[i]+"?",a:DAYS[(i+1)%7],pool:DAYS};},
-    function(){var i=Math.floor(Math.random()*7);return{q:"What day comes BEFORE "+DAYS[i]+"?",a:DAYS[(i+6)%7],pool:DAYS};},
-    function(){var i=Math.floor(Math.random()*12);return{q:"What month comes AFTER "+MONTHS[i]+"?",a:MONTHS[(i+1)%12],pool:MONTHS};},
-    function(){var i=Math.floor(Math.random()*12);return{q:"What month comes BEFORE "+MONTHS[i]+"?",a:MONTHS[(i+11)%12],pool:MONTHS};},
-    function(){var i=Math.floor(Math.random()*12);return{q:"Which season is "+MONTHS[i]+" in?",a:SEASON_NAME[SEASON_OF[i]],pool:["Spring","Summer","Fall","Winter"]};},
-    function(){return{q:"How many days are in one week?",a:"7",pool:["5","6","7","10","12"]};},
-    function(){return{q:"How many months are in one year?",a:"12",pool:["7","10","12","20","4"]};},
-    function(){return{q:"How many seasons are in one year?",a:"4",pool:["2","3","4","7","12"]};},
-    function(){return{q:"What day is TODAY?",a:DAYS[todayIdx],pool:DAYS};},
-    function(){return{q:"What season is it RIGHT NOW?",a:SEASON_NAME[seasonKey],pool:["Spring","Summer","Fall","Winter"]};},
-    function(){var i=Math.floor(Math.random()*12);return{q:"How many days are in "+MONTHS[i]+"?",a:String(daysInMonth(y,i)),pool:["28","29","30","31"]};}
+  /* TIME LADDER - make rungs tappable for videos */
+  var ladder=$("#timeLadder");
+  var timeConversions=[
+    {lhs:"60",mid:"seconds make",rhs:"1 minute",video:null,text:"60 seconds make 1 minute"},
+    {lhs:"60",mid:"minutes make",rhs:"1 hour",video:null,text:"60 minutes make 1 hour"},
+    {lhs:"24",mid:"hours make",rhs:"1 day",video:null,text:"24 hours make 1 day"},
+    {lhs:"7",mid:"days make",rhs:"1 week",video:null,text:"7 days make 1 week"},
+    {lhs:"28-31",mid:"days make",rhs:"1 month",video:null,text:"28 to 31 days make 1 month"},
+    {lhs:"12",mid:"months make",rhs:"1 year",video:null,text:"12 months make 1 year"},
+    {lhs:"4",mid:"seasons make",rhs:"1 year",video:null,text:"4 seasons make 1 year"}
   ];
+  timeConversions.forEach(function(tc){
+    var r=document.createElement("button");
+    r.type="button";
+    r.className="rung";
+    r.style.cursor="pointer";
+    r.innerHTML='<div class="lhs">'+tc.lhs+'</div><div class="mid">'+tc.mid+'</div><div class="rhs">'+tc.rhs+'</div>';
+    r.addEventListener("click",function(){say(tc.text)});
+    ladder.appendChild(r);
+  });
 
-  function newQuestion(){
-    nextBtn.hidden=true; qOpts.innerHTML="";
-    var made=MAKERS[Math.floor(Math.random()*MAKERS.length)]();
-    var opts=[made.a];
-    while(opts.length<3){var c=pick(made.pool);if(opts.indexOf(c)===-1)opts.push(c);}
-    shuffle(opts);
-    qText.textContent=made.q;
-    opts.forEach(function(o){
-      var b=document.createElement("button");
-      b.type="button"; b.className="opt"; b.textContent=o;
-      b.addEventListener("click",function(){
-        var all=[].slice.call(qOpts.children);
-        all.forEach(function(x){x.disabled=true;});
-        total++;
-        if(o===made.a){ score++; b.classList.add("right"); say("Correct! "+made.a); }
-        else{ b.classList.add("wrong");
-              all.forEach(function(x){if(x.textContent===made.a)x.classList.add("right");});
-              say("Not quite. The answer is "+made.a+"."); }
-        scoreNum.textContent=score; scoreTot.textContent=total;
-        nextBtn.hidden=false;
+  $("#speak-time").addEventListener("click",function(){
+    var open=$('.tab[aria-selected="true"]',$('[data-tabs="time"]')).dataset.tab;
+    if(open==="today"){
+      var parts=["Today is "+DAYS[todayIdx]+", "+MONTHS[m]+" "+now.getDate()+", "+y+". Yesterday was "+DAYS[yest.getDay()]+". Tomorrow will be "+DAYS[tmrw.getDay()]+". The season is "+SEASON_NAME[seasonKey]+"."];
+      BIRTHDAYS.forEach(function(kid){
+        var info=birthdayInfo(kid.month,kid.day,kid.birthYear);
+        if(info.isToday) parts.push("Today is "+kid.name+"'s birthday!");
+        else parts.push(kid.name+"'s birthday is in "+info.daysUntil+" days.");
       });
-      qOpts.appendChild(b);
+      say(parts.join(" "));
+    }
+    else if(open==="week") say("There are seven days in a week. "+DAYS.join(", "));
+    else if(open==="month") say("This month is "+MONTHS[m]+". It has "+dim+" days.");
+    else if(open==="year") say("There are twelve months in a year. "+MONTHS.join(", ")+". And there are four seasons: Spring, Summer, Fall, and Winter.");
+    else if(open==="how") say("60 seconds make 1 minute. 60 minutes make 1 hour. 24 hours make 1 day. 7 days make 1 week. About 30 days make 1 month. 12 months make 1 year. 4 seasons make 1 year.");
+    else if(open==="tpractice") readWholeQuiz();
+  });
+}
+
+var COINS=[
+  {k:"penny",name:"Penny",value:1,label:"1¢",facts:"A penny is worth 1 cent. It is brown and small."},
+  {k:"nickel",name:"Nickel",value:5,label:"5¢",facts:"A nickel is worth 5 cents. It is silver and thick."},
+  {k:"dime",name:"Dime",value:10,label:"10¢",facts:"A dime is worth 10 cents. It is the smallest coin."},
+  {k:"quarter",name:"Quarter",value:25,label:"25¢",facts:"A quarter is worth 25 cents. It is the biggest silver coin."}
+];
+var BILLS=[
+  {value:1,  cls:"b1",   name:"One Dollar",           facts:"A one dollar bill is worth 1 dollar, the same as 100 pennies."},
+  {value:5,  cls:"b5",   name:"Five Dollars",         facts:"A five dollar bill is worth 5 dollars, the same as 5 one dollar bills."},
+  {value:10, cls:"b10",  name:"Ten Dollars",          facts:"A ten dollar bill is worth 10 dollars, the same as 2 five dollar bills."},
+  {value:20, cls:"b20",  name:"Twenty Dollars",       facts:"A twenty dollar bill is worth 20 dollars, the same as 2 ten dollar bills."},
+  {value:50, cls:"b50",  name:"Fifty Dollars",        facts:"A fifty dollar bill is worth 50 dollars, the same as 5 ten dollar bills."},
+  {value:100,cls:"b100", name:"One Hundred Dollars",  facts:"A one hundred dollar bill is worth 100 dollars, the same as 2 fifty dollar bills."}
+];
+
+function initMoney(){
+  var cr=$("#coinRow"), read=$("#coinRead");
+  COINS.forEach(function(c){
+    var b=document.createElement("button");
+    b.type="button"; b.className="coincell";
+    b.innerHTML='<div class="coin '+c.k+'">'+c.label+'</div><div class="cname">'+c.name+'</div><div class="cval">'+c.label+'</div>';
+    b.addEventListener("click",function(){
+      read.innerHTML='<em>'+c.name+'</em> — '+c.facts;
+      say(c.name+". "+c.facts);
+    });
+    cr.appendChild(b);
+  });
+
+  var br=$("#billRow"), bread=$("#billRead");
+  BILLS.forEach(function(bl){
+    var b=document.createElement("button");
+    b.type="button"; b.className="billcell";
+    b.innerHTML='<div class="bill '+bl.cls+'">$'+bl.value+'</div><div class="bname">'+bl.name+'</div>';
+    b.addEventListener("click",function(){
+      bread.innerHTML='<em>'+bl.name+'</em> — '+bl.facts;
+      say(bl.name+". "+bl.facts);
+    });
+    br.appendChild(b);
+  });
+
+  $("#countNew").addEventListener("click",newCountRound);
+
+  $("#speak-money").addEventListener("click",function(){
+    var open=$('.tab[aria-selected="true"]',$('[data-tabs="money"]')).dataset.tab;
+    if(open==="coins") say("The four coins are penny, nickel, dime, and quarter. Tap one to learn more.");
+    else if(open==="bills") say("The bills are one, five, ten, twenty, fifty, and one hundred dollars. Tap one to learn more.");
+    else if(open==="count") say($("#countRead").textContent.replace(/\s+/g," "));
+    else if(open==="mpractice") readWholeQuiz();
+  });
+}
+
+function newCountRound(){
+  var box=$("#countBox"), read=$("#countRead");
+  box.innerHTML="";
+  var howMany=2+Math.floor(Math.random()*4);
+  var chosen=[], total=0;
+  for(var i=0;i<howMany;i++){
+    var c=COINS[Math.floor(Math.random()*COINS.length)];
+    chosen.push(c); total+=c.value;
+  }
+  chosen.forEach(function(c){
+    var d=document.createElement("div");
+    d.className="coin "+c.k;
+    d.textContent=c.label;
+    box.appendChild(d);
+  });
+  read.innerHTML='Count each coin and add them up.';
+  var reveal=document.createElement("button");
+  reveal.type="button"; reveal.className="next-btn";
+  reveal.style.marginTop="12px";
+  reveal.textContent="Show the answer";
+  reveal.addEventListener("click",function(){
+    var breakdown=chosen.map(function(c){return c.value+"¢"}).join(" + ");
+    read.innerHTML='<em>'+breakdown+' = '+total+'¢</em>';
+    say("The total is "+total+" cents.");
+  });
+  read.appendChild(document.createElement("br"));
+  read.appendChild(reveal);
+}
+
+function initDevotions(){
+  $("#graceText").textContent=DEVOTIONS.grace;
+  $("#bedtimeText").textContent=DEVOTIONS.bedtime;
+  $("#speak-devotion").addEventListener("click",function(){
+    say("Grace at the table: "+DEVOTIONS.grace+" Bedtime prayer: "+DEVOTIONS.bedtime);
+  });
+}
+
+/* ============== QUIZ ENGINE ============== */
+var QUIZ_LEN=5, PASS=4;
+var quiz={subject:null,q:0,right:0,current:null,el:null};
+var readingActive=false;
+
+function optionVisual(text){
+  var t=text.toLowerCase().trim();
+  var coinByName={penny:{k:"penny",label:"1¢"},nickel:{k:"nickel",label:"5¢"},dime:{k:"dime",label:"10¢"},quarter:{k:"quarter",label:"25¢"}};
+  var coinByValue={"1¢":{k:"penny",label:"1¢"},"5¢":{k:"nickel",label:"5¢"},"10¢":{k:"dime",label:"10¢"},"25¢":{k:"quarter",label:"25¢"}};
+  var billByName={"one dollar":{v:1,c:"b1"},"five dollars":{v:5,c:"b5"},"ten dollars":{v:10,c:"b10"},"twenty dollars":{v:20,c:"b20"},"fifty dollars":{v:50,c:"b50"},"one hundred dollars":{v:100,c:"b100"}};
+  var billByValue={"$1":{v:1,c:"b1"},"$5":{v:5,c:"b5"},"$10":{v:10,c:"b10"},"$20":{v:20,c:"b20"},"$50":{v:50,c:"b50"},"$100":{v:100,c:"b100"}};
+  var seasonByName={spring:"🌱",summer:"☀️",fall:"🍂",winter:"❄️"};
+  if(coinByName[t]) return '<div class="opt-visual"><div class="coin '+coinByName[t].k+'">'+coinByName[t].label+'</div></div>';
+  if(coinByValue[t]) return '<div class="opt-visual"><div class="coin '+coinByValue[t].k+'">'+coinByValue[t].label+'</div></div>';
+  if(billByName[t]) return '<div class="opt-visual"><div class="bill '+billByName[t].c+'">$'+billByName[t].v+'</div></div>';
+  if(billByValue[t]) return '<div class="opt-visual"><div class="bill '+billByValue[t].c+'">$'+billByValue[t].v+'</div></div>';
+  if(seasonByName[t]) return '<div class="opt-visual"><div class="season-emoji">'+seasonByName[t]+'</div></div>';
+  return '';
+}
+
+function timeMakers(){
+  var now=new Date(), tIdx=now.getDay(), tMo=now.getMonth();
+  return [
+    function(){var i=Math.floor(Math.random()*7);return{q:"What day comes AFTER "+DAYS[i]+"?",a:DAYS[(i+1)%7],pool:DAYS}},
+    function(){var i=Math.floor(Math.random()*7);return{q:"What day comes BEFORE "+DAYS[i]+"?",a:DAYS[(i+6)%7],pool:DAYS}},
+    function(){var i=Math.floor(Math.random()*12);return{q:"What month comes AFTER "+MONTHS[i]+"?",a:MONTHS[(i+1)%12],pool:MONTHS}},
+    function(){var i=Math.floor(Math.random()*12);return{q:"What month comes BEFORE "+MONTHS[i]+"?",a:MONTHS[(i+11)%12],pool:MONTHS}},
+    function(){var i=Math.floor(Math.random()*12);return{q:"Which season is "+MONTHS[i]+" in?",a:SEASON_NAME[SEASON_OF[i]],pool:["Spring","Summer","Fall","Winter"]}},
+    function(){return{q:"How many days are in one week?",a:"7",pool:["5","6","7","10","12"]}},
+    function(){return{q:"How many months are in one year?",a:"12",pool:["7","10","12","20","4"]}},
+    function(){return{q:"How many seasons are in one year?",a:"4",pool:["2","3","4","7","12"]}},
+    function(){return{q:"How many seconds make 1 minute?",a:"60",pool:["10","30","60","100"]}},
+    function(){return{q:"How many hours make 1 day?",a:"24",pool:["12","20","24","60"]}},
+    function(){return{q:"What day is TODAY?",a:DAYS[tIdx],pool:DAYS}},
+    function(){return{q:"What month is it RIGHT NOW?",a:MONTHS[tMo],pool:MONTHS}},
+    function(){return{q:"What month is Faith's birthday in?",a:"January",pool:MONTHS}},
+    function(){return{q:"What month is TJ's birthday in?",a:"February",pool:MONTHS}}
+  ];
+}
+
+function moneyMakers(){
+  var coinNames=COINS.map(function(c){return c.name});
+  var coinVals=["1¢","5¢","10¢","25¢"];
+  var billVals=["$1","$5","$10","$20","$50","$100"];
+  var billNames=BILLS.map(function(b){return b.name});
+  return [
+    function(){var c=COINS[Math.floor(Math.random()*4)];return{q:"How much is a "+c.name+" worth?",a:c.label,pool:coinVals}},
+    function(){var c=COINS[Math.floor(Math.random()*4)];return{q:"Which coin is worth "+c.label+"?",a:c.name,pool:coinNames}},
+    function(){var b=BILLS[Math.floor(Math.random()*BILLS.length)];return{q:"How much is a "+b.name+" bill?",a:"$"+b.value,pool:billVals}},
+    function(){var b=BILLS[Math.floor(Math.random()*BILLS.length)];return{q:"Which bill is worth $"+b.value+"?",a:b.name,pool:billNames}},
+    function(){
+      var a=COINS[Math.floor(Math.random()*4)], b;
+      do{ b=COINS[Math.floor(Math.random()*4)] } while(b.value===a.value);
+      var bigger=a.value>b.value?a:b;
+      return{q:"Which is worth MORE — a "+a.name+" or a "+b.name+"?",a:bigger.name,pool:[a.name,b.name]};
+    },
+    function(){
+      var a=BILLS[Math.floor(Math.random()*BILLS.length)], b;
+      do{ b=BILLS[Math.floor(Math.random()*BILLS.length)] } while(b.value===a.value);
+      var bigger=a.value>b.value?a:b;
+      return{q:"Which is worth MORE — a "+a.name+" bill or a "+b.name+" bill?",a:bigger.name,pool:[a.name,b.name]};
+    },
+    function(){
+      var a=COINS[Math.floor(Math.random()*3)+1];
+      var b=COINS[Math.floor(Math.random()*4)];
+      var total=a.value+b.value;
+      var opts=[total+"¢"];
+      while(opts.length<4){
+        var w=(1+Math.floor(Math.random()*10))*5;
+        if(opts.indexOf(w+"¢")===-1) opts.push(w+"¢");
+      }
+      return{q:"A "+a.name+" plus a "+b.name+" = ?",a:total+"¢",pool:opts};
+    },
+    function(){return{q:"How many pennies equal one nickel?",a:"5",pool:["1","5","10","25"]}},
+    function(){return{q:"How many pennies equal one dime?",a:"10",pool:["1","5","10","25"]}},
+    function(){return{q:"How many pennies equal one quarter?",a:"25",pool:["10","20","25","50"]}},
+    function(){return{q:"How many one dollar bills equal a five dollar bill?",a:"5",pool:["2","5","10","20"]}},
+    function(){return{q:"How many ten dollar bills equal a fifty dollar bill?",a:"5",pool:["2","5","10","20"]}},
+    function(){return{q:"How many fifty dollar bills equal one hundred dollars?",a:"2",pool:["2","5","10","100"]}}
+  ];
+}
+
+function clockMakers(){
+  return [
+    function(){return{q:"What time is it when the short hand points to 3?",a:"3 o'clock",pool:["1 o'clock","2 o'clock","3 o'clock","4 o'clock"]}},
+    function(){return{q:"The LONG hand shows the MINUTES. Which hand is longer?",a:"The minute hand",pool:["The hour hand","The minute hand"]}},
+    function(){return{q:"The SHORT hand shows the HOURS. Which hand is short?",a:"The hour hand",pool:["The hour hand","The minute hand"]}},
+    function(){return{q:"On a digital clock, the left number is the HOURS. What is the left number at 3:30?",a:"3",pool:["3","30"]}},
+    function(){return{q:"On a digital clock, the right number is the MINUTES. What is the right number at 3:30?",a:"30",pool:["3","30"]}},
+    function(){return{q:"Digital clocks are on your phone and your oven. Analog clocks have HANDS. Which has hands?",a:"Analog clock",pool:["Digital clock","Analog clock"]}},
+    function(){return{q:"How many numbers are on an analog clock?",a:"12",pool:["7","10","12","24"]}},
+    function(){return{q:"There are 60 minutes in 1 hour. How many minutes until 3 o'clock when it's 2:30?",a:"30",pool:["15","20","30","60"]}}
+  ];
+}
+
+function stopReadingSequence(){
+  readingActive=false;
+  if(quiz.el){
+    var qEl=$(".q",quiz.el); if(qEl) qEl.classList.remove("speaking");
+    $$(".opt",quiz.el).forEach(function(o){o.classList.remove("speaking")});
+  }
+}
+
+function readWholeQuiz(){
+  if(!quiz.current || !quiz.el) return;
+  stopReadingSequence();
+  readingActive=true;
+  var qEl=$(".q",quiz.el);
+  var opts=$$(".opt",quiz.el);
+  qEl.classList.add("speaking");
+  say(quiz.current.q, function(){
+    qEl.classList.remove("speaking");
+    if(!readingActive) return;
+    setTimeout(function(){ readOptionsStep(opts,0); }, 400);
+  });
+}
+function readOptionsStep(opts, i){
+  if(!readingActive) return;
+  opts.forEach(function(o){o.classList.remove("speaking")});
+  if(i>=opts.length) return;
+  opts[i].classList.add("speaking");
+  say(opts[i].dataset.a, function(){
+    opts[i].classList.remove("speaking");
+    if(!readingActive) return;
+    setTimeout(function(){ readOptionsStep(opts, i+1); }, 350);
+  });
+}
+
+function startQuiz(subject){
+  quiz.subject=subject; quiz.q=0; quiz.right=0;
+  quiz.el=$("#quiz-"+subject);
+  nextQuestion();
+}
+function nextQuestion(){
+  stopReadingSequence();
+  var makers=quiz.subject==="time"?timeMakers():(quiz.subject==="money"?moneyMakers():clockMakers());
+  var made=makers[Math.floor(Math.random()*makers.length)]();
+  var opts=[made.a];
+  while(opts.length<3 && opts.length<made.pool.length){
+    var c=pick(made.pool);
+    if(opts.indexOf(c)===-1) opts.push(c);
+  }
+  shuffle(opts);
+  quiz.current=made;
+
+  var micHtml = SR ? '<button class="mic-btn quiz-mic" type="button">🎤 Say Answer</button>' : '';
+  quiz.el.innerHTML=
+    '<div class="eyebrow">Question '+(quiz.q+1)+' of '+QUIZ_LEN+'</div>'+
+    '<div class="q">'+made.q+'</div>'+
+    '<div class="qhint">Watch for the yellow highlight — that\u2019s what is being said. Tap the answer or press the mic.</div>'+
+    '<div class="opts">'+opts.map(function(o){
+      var esc=o.replace(/"/g,"&quot;");
+      return '<button class="opt" data-a="'+esc+'">'+optionVisual(o)+'<div class="opt-text">'+o+'</div></button>';
+    }).join('')+'</div>'+
+    '<div class="feedback"></div>'+
+    '<div class="quizbar">'+
+      '<div class="progress">Score: <b>'+quiz.right+'</b> right so far</div>'+
+      '<button class="hear-btn" type="button">🔊 Hear All Again</button>'+
+      micHtml+
+      '<button class="next-btn" type="button" hidden>Next →</button>'+
+    '</div>';
+
+  $$(".opt",quiz.el).forEach(function(b){ b.addEventListener("click",function(){ stopReadingSequence(); answer(b.dataset.a,b); }) });
+  $(".next-btn",quiz.el).addEventListener("click",advance);
+  $(".hear-btn",quiz.el).addEventListener("click",readWholeQuiz);
+  var micBtn=$(".quiz-mic",quiz.el);
+  if(micBtn){
+    micBtn.addEventListener("click",function(){
+      stopReadingSequence();
+      if(micBtn.classList.contains("listening")) return;
+      micBtn.classList.add("listening"); micBtn.textContent="🎤 Listening...";
+      listenOnce(function(alts){
+        var matched=null;
+        for(var i=0;i<alts.length && !matched;i++){
+          var heard=alts[i].replace(/[^a-z0-9]/g,"");
+          $$(".opt",quiz.el).forEach(function(b){
+            if(matched) return;
+            var opt=b.dataset.a.toLowerCase().replace(/[^a-z0-9]/g,"");
+            var optWords=b.dataset.a.toLowerCase();
+            if(heard===opt || (heard.length>1 && (heard.indexOf(opt)>-1 || opt.indexOf(heard)>-1)) || optWords.split(/\s+/).some(function(w){return heard===w.replace(/[^a-z0-9]/g,"")})){
+              matched=b;
+            }
+          });
+        }
+        if(matched) answer(matched.dataset.a,matched);
+      },function(){
+        micBtn.classList.remove("listening"); micBtn.textContent="🎤 Say Answer";
+      });
     });
   }
-  nextBtn.addEventListener("click",newQuestion);
-  newQuestion();
+  setTimeout(readWholeQuiz, 250);
+}
 
+function buildMatchQuiz(){
+  var el=$("#match-quiz");
+  var now=new Date(), h=now.getHours(), m=now.getMinutes();
+  var hDisplay=h>12?h-12:(h===0?12:h);
+  var mm=String(m).padStart(2,'0');
+  var digital=hDisplay+":"+mm;
+  el.innerHTML='<div class="eyebrow">Match the clocks</div><p style="text-align:center;margin:20px 0;font-weight:700;font-size:clamp(16px,2.2vw,20px)">The analog clock (with hands) and the digital clock (with numbers) show the same time. They are the same!</p>';
+}
+
+function answer(chosen,btn){
+  stopReadingSequence();
+  var fb=$(".feedback",quiz.el), micBtn=$(".quiz-mic",quiz.el);
+  if(micBtn){micBtn.classList.remove("listening"); micBtn.textContent="🎤 Say Answer"}
+  $$(".opt",quiz.el).forEach(function(b){b.disabled=true});
+  var correct=(chosen===quiz.current.a);
+  if(correct){
+    btn.classList.add("right");
+    fb.textContent="🌟 GREAT JOB!";
+    fb.className="feedback show good";
+    quiz.right++;
+    say("Great job!");
+  } else {
+    btn.classList.add("wrong");
+    $$(".opt",quiz.el).forEach(function(b){ if(b.dataset.a===quiz.current.a) b.classList.add("right") });
+    fb.innerHTML='💪 TRY AGAIN NEXT TIME<br><span style="font-size:.7em">The answer is '+quiz.current.a+'</span>';
+    fb.className="feedback show bad";
+    say("Try again next time. The answer is "+quiz.current.a+".");
+  }
+  $(".progress",quiz.el).innerHTML='Score: <b>'+quiz.right+'</b> right so far';
+  $(".next-btn",quiz.el).hidden=false;
+}
+function advance(){
+  quiz.q++;
+  if(quiz.q>=QUIZ_LEN) return finish();
+  nextQuestion();
+}
+function finish(){
+  stopReadingSequence();
+  var passed=quiz.right>=PASS;
+  var msg=passed
+    ? {cls:"pass",h:"🎉 YOU PASSED!",p:"You got "+quiz.right+" out of "+QUIZ_LEN+" right! Amazing work.",say:"You passed! Amazing work."}
+    : {cls:"tryagain",h:"💪 GREAT TRY!",p:"You got "+quiz.right+" out of "+QUIZ_LEN+" right. Let's practice more!",say:"Great try. Let's practice more."};
+  quiz.el.innerHTML='<div class="finale '+msg.cls+'"><h3>'+msg.h+'</h3><p>'+msg.p+'</p><button class="next-btn" type="button">Play Again</button></div>';
+  $(".next-btn",quiz.el).addEventListener("click",function(){ startQuiz(quiz.subject); });
+  say(msg.say);
+}
+
+initTime();
+initMoney();
+initDevotions();
+if("speechSynthesis" in window) window.speechSynthesis.onvoiceschanged=function(){ getBestVoice(); };
 })();
 </script>
 </body>
