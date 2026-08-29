@@ -24,6 +24,7 @@ body[data-subject="time"]      { --accent:var(--time);      --accent-ink:var(--t
 body[data-subject="money"]     { --accent:var(--money);     --accent-ink:var(--money-ink); }
 body[data-subject="clock"]     { --accent:var(--clock);     --accent-ink:var(--clock-ink); }
 body[data-subject="devotion"]  { --accent:var(--devotion);  --accent-ink:var(--devotion-ink); }
+body[data-subject="reading"]   { --accent:var(--reading);   --accent-ink:var(--reading-ink); }
 body[data-subject="home"]      { --accent:#FCF7EE;          --accent-ink:#0F1220; }
 
 *{box-sizing:border-box;margin:0;padding:0}
@@ -246,6 +247,28 @@ button{font-family:var(--font)}
 .finale.tryagain h3{color:var(--wrong)}
 
 /* VIDEO MODAL */
+/* ============== READING ============== */
+.level-note{text-align:center;color:var(--ink-dim);font-size:clamp(14px,1.7vw,17px);margin:-4px 0 18px;line-height:1.5}
+.abc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:12px}
+.abc-tile{background:var(--panel2);border:2px solid var(--line);border-radius:16px;padding:14px 6px 12px;cursor:pointer;color:var(--ink);display:flex;flex-direction:column;align-items:center;gap:4px;transition:transform .12s ease,border-color .12s ease}
+.abc-tile:hover,.abc-tile:focus-visible{transform:translateY(-3px);border-color:var(--accent)}
+.abc-tile.lit{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.abc-cap{font-size:clamp(30px,4.4vw,42px);font-weight:800;line-height:1}
+.abc-low{font-size:clamp(22px,3.2vw,30px);font-weight:700;line-height:1;opacity:.85}
+.abc-pic{font-size:clamp(20px,2.6vw,26px);line-height:1}
+.word-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px}
+.word-tile{background:var(--panel2);border:2px solid var(--line);border-radius:16px;padding:16px 8px;cursor:pointer;color:var(--ink);font-size:clamp(22px,3vw,30px);font-weight:800;letter-spacing:.04em;transition:transform .12s ease,border-color .12s ease;display:flex;flex-direction:column;align-items:center;gap:6px}
+.word-tile:hover,.word-tile:focus-visible{transform:translateY(-3px);border-color:var(--accent)}
+.word-tile.lit{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.word-pic{font-size:clamp(24px,3vw,32px);line-height:1}
+.word-sound{font-size:clamp(12px,1.5vw,14px);font-weight:600;letter-spacing:.12em;opacity:.7;text-transform:uppercase}
+.group-head{display:flex;align-items:center;gap:10px;margin:26px 0 12px;font-size:clamp(17px,2.2vw,22px);font-weight:800;color:var(--accent)}
+.group-head:first-child{margin-top:0}
+.dolch-set{margin-bottom:26px}
+.dolch-set:last-child{margin-bottom:0}
+.vid-placeholder{background:var(--panel2);border:2px dashed var(--line);border-radius:16px;padding:clamp(26px,5vw,44px) 20px;text-align:center;color:var(--ink-dim);font-size:clamp(15px,1.9vw,18px);line-height:1.6}
+.vid-placeholder .ph-icon{font-size:44px;display:block;margin-bottom:12px}
+
 .video-modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.85);z-index:100;animation:fadeIn .3s ease}
 .video-modal.show{display:flex;align-items:center;justify-content:center}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
@@ -302,11 +325,10 @@ button{font-family:var(--font)}
         <span class="tile-icon">🙏</span>
         <span class="tile-name">Devotions</span>
       </button>
-      <div class="tile soon">
-        <span class="soon-label">Coming Soon</span>
+      <button class="tile reading" data-open="reading">
         <span class="tile-icon">📖</span>
         <span class="tile-name">Reading</span>
-      </div>
+      </button>
       <div class="tile soon">
         <span class="soon-label">Coming Soon</span>
         <span class="tile-icon">🗺️</span>
@@ -548,6 +570,85 @@ button{font-family:var(--font)}
   </div>
 </div>
 
+<div class="screen" id="screen-reading">
+  <div class="wrap">
+    <nav class="topnav">
+      <button class="home-btn" data-home>&larr; Home</button>
+      <div class="subject-title">&#128214; Reading</div>
+      <button class="speak-btn top" id="speak-reading">&#128266; Read Aloud</button>
+    </nav>
+    <div class="tabs" role="tablist" data-tabs="reading">
+      <button class="tab" role="tab" aria-selected="true" data-tab="alphabet">Alphabet</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="words2">2-Letter Words</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="words3">3-Letter Words</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="groups">Word Groups</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="dolch">Dolch Words</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="rpractice">Practice</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="rvideos">Videos</button>
+    </div>
+
+    <div class="panel on" data-panel="alphabet">
+      <div class="card">
+        <div class="eyebrow">Level 1 &mdash; Tap a letter to hear its name and its sound</div>
+        <div class="level-note">Every letter shows its capital and its lowercase together, so they are learned as one pair.</div>
+        <div class="abc-grid" id="abcGrid"></div>
+        <div class="readout" id="abcRead" style="margin-top:22px">Tap any letter above to hear it.</div>
+      </div>
+    </div>
+
+    <div class="panel" data-panel="words2">
+      <div class="card">
+        <div class="eyebrow">Level 2 &mdash; Tap a word to hear it read aloud</div>
+        <div class="level-note">These short sight words show up on almost every page of a beginner book. Learn them by sight, not by sounding out.</div>
+        <div class="word-grid" id="w2Grid"></div>
+        <div class="readout" id="w2Read" style="margin-top:22px">Tap any word above to hear it.</div>
+      </div>
+    </div>
+
+    <div class="panel" data-panel="words3">
+      <div class="card">
+        <div class="eyebrow">Level 3 &mdash; Tap a word to hear it sounded out, then said whole</div>
+        <div class="level-note">These are CVC words: consonant, vowel, consonant. Each one can be sounded out letter by letter.</div>
+        <div class="word-grid" id="w3Grid"></div>
+        <div class="readout" id="w3Read" style="margin-top:22px">Tap any word above to hear it.</div>
+      </div>
+    </div>
+
+    <div class="panel" data-panel="groups">
+      <div class="card">
+        <div class="eyebrow">Level 4 &mdash; Sight words sorted by what they mean</div>
+        <div class="level-note">Tap any word to hear it. Words are grouped so they are easier to remember together.</div>
+        <div id="groupsWrap"></div>
+        <div class="readout" id="grpRead" style="margin-top:22px">Tap any word above to hear it.</div>
+      </div>
+    </div>
+
+    <div class="panel" data-panel="dolch">
+      <div class="card">
+        <div class="eyebrow">Level 5 &mdash; Dolch words, the most common words in school books</div>
+        <div class="level-note">These are the words that make up about half of everything a child reads at school. Tap any word to hear it.</div>
+        <div id="dolchWrap"></div>
+        <div class="readout" id="dolRead" style="margin-top:22px">Tap any word above to hear it.</div>
+      </div>
+    </div>
+
+    <div class="panel" data-panel="rpractice">
+      <div class="card" id="quiz-reading"></div>
+    </div>
+
+    <div class="panel" data-panel="rvideos">
+      <div class="card">
+        <div class="eyebrow">&#128250; Reading videos</div>
+        <div class="vid-placeholder">
+          <span class="ph-icon">&#127916;</span>
+          No reading videos added yet.<br>
+          When your NotebookLM videos are on YouTube, tell me the video ID and title and I will drop the buttons in right here.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="screen" id="screen-devotion">
   <div class="wrap">
     <nav class="topnav">
@@ -706,6 +807,7 @@ $$("[data-tabs]").forEach(function(tabs){
       if(t.dataset.tab==="tpractice") startQuiz("time");
       if(t.dataset.tab==="mpractice") startQuiz("money");
       if(t.dataset.tab==="cpractice") startQuiz("clock");
+      if(t.dataset.tab==="rpractice") startQuiz("reading");
       if(t.dataset.tab==="count") newCountRound();
       if(t.dataset.tab==="match") buildMatchQuiz();
     });
@@ -983,6 +1085,183 @@ function initDevotions(){
   });
 }
 
+/* ============== READING ============== */
+var PHON={a:"aa",b:"buh",c:"kuh",d:"duh",e:"eh",f:"ff",g:"guh",h:"huh",i:"ih",j:"juh",k:"kuh",l:"ll",m:"mm",n:"nn",o:"ah",p:"puh",q:"kwuh",r:"rr",s:"sss",t:"tuh",u:"uh",v:"vv",w:"wuh",x:"ks",y:"yuh",z:"zz"};
+var ALPHABET=[
+  {l:"A",w:"apple",e:"🍎"},{l:"B",w:"ball",e:"⚽"},{l:"C",w:"cat",e:"🐱"},{l:"D",w:"dog",e:"🐶"},
+  {l:"E",w:"egg",e:"🥚"},{l:"F",w:"fish",e:"🐟"},{l:"G",w:"goat",e:"🐐"},{l:"H",w:"hat",e:"🎩"},
+  {l:"I",w:"igloo",e:"🧊"},{l:"J",w:"jar",e:"🫙"},{l:"K",w:"key",e:"🔑"},{l:"L",w:"leaf",e:"🍃"},
+  {l:"M",w:"moon",e:"🌙"},{l:"N",w:"nest",e:"🪹"},{l:"O",w:"otter",e:"🦦"},{l:"P",w:"pig",e:"🐷"},
+  {l:"Q",w:"queen",e:"👑"},{l:"R",w:"rain",e:"🌧️"},{l:"S",w:"sun",e:"☀️"},{l:"T",w:"tree",e:"🌳"},
+  {l:"U",w:"umbrella",e:"☂️"},{l:"V",w:"van",e:"🚐"},{l:"W",w:"web",e:"🕸️"},{l:"X",w:"box",e:"📦"},
+  {l:"Y",w:"yarn",e:"🧶"},{l:"Z",w:"zebra",e:"🦓"}
+];
+var W2=["is","it","at","to","in","on","up","we","he","me","as","by","do","go","no","or","so"];
+var W3=[
+  {w:"cat",e:"🐱"},{w:"dog",e:"🐶"},{w:"sun",e:"☀️"},{w:"pig",e:"🐷"},{w:"bat",e:"🦇"},
+  {w:"hat",e:"🎩"},{w:"sit",e:"🪑"},{w:"run",e:"🏃"},{w:"big",e:"🐘"},{w:"sad",e:"😢"},
+  {w:"mad",e:"😠"},{w:"fun",e:"🎉"},{w:"can",e:"🥫"},{w:"man",e:"👨"},{w:"pan",e:"🍳"},
+  {w:"hot",e:"🔥"},{w:"pot",e:"🍲"},{w:"dot",e:"⚫"}
+];
+var WORD_GROUPS=[
+  {name:"Colors",one:"color",icon:"🎨",words:[{w:"red",e:"🔴"},{w:"blue",e:"🔵"},{w:"yellow",e:"🟡"},{w:"green",e:"🟢"},{w:"orange",e:"🟠"},{w:"purple",e:"🟣"},{w:"brown",e:"🟤"},{w:"black",e:"⚫"},{w:"white",e:"⚪"},{w:"pink",e:"🌸"}]},
+  {name:"Numbers",one:"number",icon:"🔢",words:[{w:"one",e:"1️⃣"},{w:"two",e:"2️⃣"},{w:"three",e:"3️⃣"},{w:"four",e:"4️⃣"},{w:"five",e:"5️⃣"},{w:"six",e:"6️⃣"},{w:"seven",e:"7️⃣"},{w:"eight",e:"8️⃣"},{w:"nine",e:"9️⃣"},{w:"ten",e:"🔟"}]},
+  {name:"Actions",one:"action",icon:"🏃",words:[{w:"run",e:"🏃"},{w:"jump",e:"🦘"},{w:"sit",e:"🪑"},{w:"eat",e:"🍽️"},{w:"walk",e:"🚶"},{w:"sleep",e:"😴"},{w:"read",e:"📖"},{w:"play",e:"🧸"},{w:"sing",e:"🎵"},{w:"look",e:"👀"}]},
+  {name:"People",one:"person",icon:"👨‍👩‍👧",words:[{w:"mom",e:"👩"},{w:"dad",e:"👨"},{w:"boy",e:"👦"},{w:"girl",e:"👧"},{w:"baby",e:"👶"},{w:"friend",e:"🤝"},{w:"teacher",e:"👩‍🏫"},{w:"family",e:"👨‍👩‍👧"}]}
+];
+var DOLCH=[
+  {name:"Pre-K",words:["a","and","away","big","blue","can","come","down","find","for","funny","go","help","here","I","in","is","it","jump","little","look","make","me","my","not","one","play","red","run","said","see","the","three","to","two","up","we","where","yellow","you"]},
+  {name:"Kindergarten",words:["all","am","are","at","ate","be","black","brown","but","came","did","do","eat","four","get","good","have","he","into","like","must","new","no","now","on","our","out","please","pretty","ran","ride","saw","say","she","so","soon","that","there","they","this","too","under","want","was","well","went","what","white","who","will","with","yes"]},
+  {name:"First Grade",words:["after","again","an","any","as","ask","by","could","every","fly","from","give","going","had","has","her","him","his","how","just","know","let","live","may","of","old","once","open","over","put","round","some","stop","take","thank","them","then","think","walk","were","when"]},
+  {name:"Second Grade",words:["always","around","because","been","before","best","both","buy","call","cold","does","fast","first","five","found","gave","goes","green","its","made","many","off","or","pull","read","right","sing","sit","sleep","tell","their","these","those","upon","us","use","very","wash","which","why","wish","work","would","write","your"]}
+];
+
+var READING_PIC={};
+W3.forEach(function(o){ READING_PIC[o.w]=o.e });
+WORD_GROUPS.forEach(function(g){ g.words.forEach(function(o){ if(!READING_PIC[o.w]) READING_PIC[o.w]=o.e }) });
+
+function article(w){ return "aeiou".indexOf(w.charAt(0).toLowerCase())>-1 ? "an" : "a"; }
+
+function letterSpeech(a){
+  return a.l+". "+a.l+" says "+PHON[a.l.toLowerCase()]+". "+a.l+" is for "+a.w+".";
+}
+function soundOut(word){
+  var parts=word.split("").map(function(ch){return PHON[ch]||ch});
+  return parts.join(", ")+" ... "+word+".";
+}
+function litOnly(el,cls){
+  $("."+cls).forEach(function(x){x.classList.remove("lit")});
+  el.classList.add("lit");
+}
+
+function buildReading(){
+  var abc=$("#abcGrid");
+  ALPHABET.forEach(function(a){
+    var b=document.createElement("button");
+    b.type="button"; b.className="abc-tile";
+    b.innerHTML='<span class="abc-cap">'+a.l+'</span><span class="abc-low">'+a.l.toLowerCase()+'</span><span class="abc-pic">'+a.e+'</span>';
+    b.addEventListener("click",function(){
+      litOnly(b,"abc-tile");
+      $("#abcRead").innerHTML='<b>'+a.l+' '+a.l.toLowerCase()+'</b> &mdash; says &ldquo;'+PHON[a.l.toLowerCase()]+'&rdquo; &mdash; '+a.e+' '+a.w;
+      say(letterSpeech(a));
+    });
+    abc.appendChild(b);
+  });
+
+  var g2=$("#w2Grid");
+  W2.forEach(function(w){
+    var b=document.createElement("button");
+    b.type="button"; b.className="word-tile";
+    b.innerHTML=w+'<span class="word-sound">sight word</span>';
+    b.addEventListener("click",function(){
+      litOnly(b,"word-tile");
+      $("#w2Read").innerHTML='<b>'+w+'</b> &mdash; a sight word. Say it whole, don&rsquo;t sound it out.';
+      say(w+". "+w+".");
+    });
+    g2.appendChild(b);
+  });
+
+  var g3=$("#w3Grid");
+  W3.forEach(function(o){
+    var b=document.createElement("button");
+    b.type="button"; b.className="word-tile";
+    b.innerHTML='<span class="word-pic">'+o.e+'</span>'+o.w;
+    b.addEventListener("click",function(){
+      litOnly(b,"word-tile");
+      $("#w3Read").innerHTML='<b>'+o.w+'</b> '+o.e+' &mdash; '+o.w.split("").join(" &middot; ");
+      say(soundOut(o.w));
+    });
+    g3.appendChild(b);
+  });
+
+  var gw=$("#groupsWrap");
+  WORD_GROUPS.forEach(function(grp){
+    var h=document.createElement("div");
+    h.className="group-head";
+    h.innerHTML='<span>'+grp.icon+'</span><span>'+grp.name+'</span>';
+    gw.appendChild(h);
+    var grid=document.createElement("div");
+    grid.className="word-grid";
+    grp.words.forEach(function(o){
+      var b=document.createElement("button");
+      b.type="button"; b.className="word-tile";
+      b.innerHTML='<span class="word-pic">'+o.e+'</span>'+o.w;
+      b.addEventListener("click",function(){
+        litOnly(b,"word-tile");
+        $("#grpRead").innerHTML='<b>'+o.w+'</b> '+o.e+' &mdash; '+article(grp.one)+' '+grp.one+' word.';
+        say(o.w+". "+o.w+".");
+      });
+      grid.appendChild(b);
+    });
+    gw.appendChild(grid);
+  });
+
+  var dw=$("#dolchWrap");
+  DOLCH.forEach(function(set){
+    var box=document.createElement("div");
+    box.className="dolch-set";
+    var h=document.createElement("div");
+    h.className="group-head";
+    h.innerHTML='<span>&#11088;</span><span>'+set.name+'</span>';
+    box.appendChild(h);
+    var grid=document.createElement("div");
+    grid.className="word-grid";
+    set.words.forEach(function(w){
+      var b=document.createElement("button");
+      b.type="button"; b.className="word-tile";
+      b.textContent=w;
+      b.addEventListener("click",function(){
+        litOnly(b,"word-tile");
+        $("#dolRead").innerHTML='<b>'+w+'</b> &mdash; a '+set.name+' Dolch word.';
+        say(w+". "+w+".");
+      });
+      grid.appendChild(b);
+    });
+    box.appendChild(grid);
+    dw.appendChild(box);
+  });
+
+  $("#speak-reading").addEventListener("click",function(){
+    var open=$('.tab[aria-selected="true"]',$('[data-tabs="reading"]')).dataset.tab;
+    if(open==="alphabet") say("The alphabet has twenty six letters, from A to Z. Every letter has a capital and a lowercase. Tap a letter to hear its name and its sound.");
+    else if(open==="words2") say("These are two letter sight words. "+W2.join(", ")+". Say them by sight instead of sounding them out.");
+    else if(open==="words3") say("These are three letter words you can sound out. "+W3.map(function(o){return o.w}).join(", ")+".");
+    else if(open==="groups") say("These sight words are sorted into groups: colors, numbers, actions, and people. Tap any word to hear it.");
+    else if(open==="dolch") say("Dolch words are the most common words in school books. They are split into Pre-K, Kindergarten, First Grade, and Second Grade. Tap any word to hear it.");
+    else if(open==="rvideos") say("Reading videos will show up here once they are added.");
+    else readWholeQuiz();
+  });
+}
+
+function readingMakers(){
+  var letters=ALPHABET.map(function(a){return a.l});
+  var cvc=W3.map(function(o){return o.w});
+  var allGroupWords=[];
+  WORD_GROUPS.forEach(function(g){ g.words.forEach(function(o){ allGroupWords.push(o.w) }) });
+  return [
+    function(){var i=Math.floor(Math.random()*25);return{q:"Which letter comes AFTER "+letters[i]+"?",a:letters[i+1],pool:letters}},
+    function(){var i=1+Math.floor(Math.random()*25);return{q:"Which letter comes BEFORE "+letters[i]+"?",a:letters[i-1],pool:letters}},
+    function(){var a=pick(ALPHABET);return{q:"Which letter does the word "+a.w+" start with?",a:a.l,pool:letters}},
+    function(){var a=pick(ALPHABET);return{q:"Which letter makes the sound "+PHON[a.l.toLowerCase()]+"?",a:a.l,pool:letters}},
+    function(){var o=pick(W3);return{q:"Which word goes with "+o.e+"?",a:o.w,pool:cvc,nopic:true}},
+    function(){var o=pick(W3);return{q:"Which word is spelled "+o.w.split("").join(" - ")+"?",a:o.w,pool:cvc}},
+    function(){
+      var o=pick(W3);
+      var rhymes=cvc.filter(function(w){return w!==o.w && w.slice(1)===o.w.slice(1)});
+      if(!rhymes.length) return{q:"Which word goes with "+o.e+"?",a:o.w,pool:cvc,nopic:true};
+      return{q:"Which word rhymes with "+o.w+"?",a:pick(rhymes),pool:cvc};
+    },
+    function(){
+      var g=pick(WORD_GROUPS), o=pick(g.words);
+      var others=allGroupWords.filter(function(w){
+        return g.words.every(function(x){return x.w!==w});
+      });
+      return{q:"Which one is "+article(g.one)+" "+g.one+" word?",a:o.w,pool:others.concat([o.w])};
+    },
+    function(){var w=pick(W2);return{q:"Which two letter word is spelled "+w.split("").join(" - ")+"?",a:w,pool:W2}}
+  ];
+}
+
 /* ============== QUIZ ENGINE ============== */
 var QUIZ_LEN=5, PASS=4;
 var quiz={subject:null,q:0,right:0,current:null,el:null};
@@ -1000,6 +1279,7 @@ function optionVisual(text){
   if(billByName[t]) return '<div class="opt-visual"><div class="bill '+billByName[t].c+'">$'+billByName[t].v+'</div></div>';
   if(billByValue[t]) return '<div class="opt-visual"><div class="bill '+billByValue[t].c+'">$'+billByValue[t].v+'</div></div>';
   if(seasonByName[t]) return '<div class="opt-visual"><div class="season-emoji">'+seasonByName[t]+'</div></div>';
+  if(typeof READING_PIC!=="undefined" && READING_PIC[t] && !(quiz.current&&quiz.current.nopic)) return '<div class="opt-visual"><div class="season-emoji">'+READING_PIC[t]+'</div></div>';
   return '';
 }
 
@@ -1118,7 +1398,7 @@ function startQuiz(subject){
 }
 function nextQuestion(){
   stopReadingSequence();
-  var makers=quiz.subject==="time"?timeMakers():(quiz.subject==="money"?moneyMakers():clockMakers());
+  var makers=quiz.subject==="time"?timeMakers():(quiz.subject==="money"?moneyMakers():(quiz.subject==="reading"?readingMakers():clockMakers()));
   var made=makers[Math.floor(Math.random()*makers.length)]();
   var opts=[made.a];
   while(opts.length<3 && opts.length<made.pool.length){
@@ -1226,6 +1506,7 @@ function finish(){
 initTime();
 initMoney();
 initDevotions();
+buildReading();
 if("speechSynthesis" in window) window.speechSynthesis.onvoiceschanged=function(){ getBestVoice(); };
 })();
 </script>
