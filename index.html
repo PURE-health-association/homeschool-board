@@ -19,12 +19,14 @@
   --devotion:#D89AC4; --devotion-ink:#3a0a2a;
   --right:#7ED957; --wrong:#FF7A70;
   --reading:#FFD24C; --reading-ink:#1a1000;
+  --states:#9B8CFF; --states-ink:#140a3a;
 }
 body[data-subject="time"]      { --accent:var(--time);      --accent-ink:var(--time-ink); }
 body[data-subject="money"]     { --accent:var(--money);     --accent-ink:var(--money-ink); }
 body[data-subject="clock"]     { --accent:var(--clock);     --accent-ink:var(--clock-ink); }
 body[data-subject="devotion"]  { --accent:var(--devotion);  --accent-ink:var(--devotion-ink); }
 body[data-subject="reading"]   { --accent:var(--reading);   --accent-ink:var(--reading-ink); }
+body[data-subject="states"]    { --accent:var(--states);    --accent-ink:var(--states-ink); }
 body[data-subject="home"]      { --accent:#FCF7EE;          --accent-ink:#0F1220; }
 
 *{box-sizing:border-box;margin:0;padding:0}
@@ -50,6 +52,7 @@ button{font-family:var(--font)}
 .tile.money{background:linear-gradient(140deg,#7ED957,#4EA83A)}
 .tile.clock{background:linear-gradient(140deg,#FF9F45,#FF6B35)}
 .tile.devotion{background:linear-gradient(140deg,#D89AC4,#A85899)}
+.tile.states{background:linear-gradient(140deg,#9B8CFF,#6A57D6)}
 .tile.soon{background:#242A48;color:var(--ink-dim);cursor:default;position:relative}
 .tile.soon:hover{transform:none}
 .tile-icon{font-size:clamp(46px,8vw,90px);line-height:1}
@@ -321,6 +324,56 @@ button{font-family:var(--font)}
   .video-wrapper{width:96vw}
   .video-close{top:10px;right:10px;width:44px;height:44px;font-size:20px}
 }
+
+/* ===== STATES ===== */
+.homebase{background:linear-gradient(150deg,#2b2358,#1B2038);border:2px solid var(--accent);border-radius:20px;padding:clamp(20px,3.4vw,32px);text-align:center}
+.homebase .hb-star{font-size:clamp(52px,10vw,86px);line-height:1;display:block}
+.homebase .hb-state{font-size:clamp(38px,8vw,68px);font-weight:800;letter-spacing:.04em;margin:6px 0 2px;color:var(--accent)}
+.homebase .hb-sub{color:var(--ink-dim);font-size:clamp(15px,2vw,19px);line-height:1.5}
+.fact-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:20px}
+.fact{background:var(--panel2);border:2px solid var(--line);border-radius:16px;padding:14px 12px;text-align:center;cursor:pointer;color:var(--ink);transition:transform .12s ease,border-color .12s ease}
+.fact:hover,.fact.lit{transform:translateY(-3px);border-color:var(--accent)}
+.fact .fact-k{display:block;font-size:clamp(11px,1.3vw,13px);text-transform:uppercase;letter-spacing:.12em;color:var(--ink-dim);font-weight:700;margin-bottom:6px}
+.fact .fact-v{display:block;font-size:clamp(19px,2.8vw,26px);font-weight:800;letter-spacing:-.01em}
+.states-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:12px}
+.state-tile{background:var(--panel2);border:2px solid var(--line);border-radius:16px;padding:14px 10px;cursor:pointer;color:var(--ink);text-align:center;transition:transform .12s ease,border-color .12s ease}
+.state-tile:hover,.state-tile.lit{transform:translateY(-3px);border-color:var(--accent)}
+.state-tile.home-state{border-color:var(--accent);background:linear-gradient(150deg,#332a63,var(--panel2))}
+.state-tile .st-name{display:block;font-size:clamp(17px,2.1vw,21px);font-weight:800;letter-spacing:-.01em}
+.state-tile .st-cap{display:block;font-size:clamp(13px,1.6vw,15px);color:var(--ink-dim);margin-top:4px}
+.state-tile .st-cap b{color:var(--accent);font-weight:700}
+.region-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.region-card{border:2px solid var(--line);border-radius:18px;padding:18px 16px;cursor:pointer;color:var(--ink);text-align:left;transition:transform .12s ease,border-color .12s ease;background:var(--panel2)}
+.region-card:hover,.region-card.lit{transform:translateY(-3px);border-color:var(--accent)}
+.region-card .rg-top{display:flex;align-items:center;gap:10px;font-size:clamp(19px,2.4vw,24px);font-weight:800}
+.region-card .rg-where{color:var(--accent);font-weight:700;font-size:clamp(13px,1.6vw,15px);margin-top:6px;text-transform:uppercase;letter-spacing:.1em}
+.region-card .rg-desc{color:var(--ink-dim);font-size:clamp(14px,1.7vw,16px);line-height:1.5;margin-top:8px}
+.region-card .rg-list{font-size:clamp(13px,1.6vw,15px);margin-top:10px;line-height:1.6}
+.compass{position:relative;width:min(300px,78vw);aspect-ratio:1;margin:10px auto 4px;border-radius:50%;border:3px solid var(--line);background:radial-gradient(circle at 50% 50%,#2b2358,#1B2038)}
+.compass .cdir{position:absolute;width:58px;height:58px;border-radius:50%;border:2px solid var(--line);background:var(--panel2);color:var(--ink);font-weight:800;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .12s ease,border-color .12s ease}
+.compass .cdir:hover,.compass .cdir.lit{border-color:var(--accent);color:var(--accent);transform:scale(1.08)}
+.compass .cn{top:8px;left:50%;transform:translateX(-50%)}
+.compass .cn:hover,.compass .cn.lit{transform:translateX(-50%) scale(1.08)}
+.compass .cs{bottom:8px;left:50%;transform:translateX(-50%)}
+.compass .cs:hover,.compass .cs.lit{transform:translateX(-50%) scale(1.08)}
+.compass .cw{left:8px;top:50%;transform:translateY(-50%)}
+.compass .cw:hover,.compass .cw.lit{transform:translateY(-50%) scale(1.08)}
+.compass .ce{right:8px;top:50%;transform:translateY(-50%)}
+.compass .ce:hover,.compass .ce.lit{transform:translateY(-50%) scale(1.08)}
+.compass .cneedle{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:clamp(40px,9vw,64px);line-height:1}
+.travel-bar{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:16px}
+.travel-mode{background:var(--panel2);border:2px solid var(--line);border-radius:999px;padding:11px 20px;font-weight:800;color:var(--ink);cursor:pointer;font-size:clamp(14px,1.8vw,17px)}
+.travel-mode[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.tally{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin:4px 0 18px;color:var(--ink-dim);font-size:clamp(14px,1.8vw,17px)}
+.tally b{color:var(--accent);font-size:1.25em}
+.state-tile.lived{border-color:var(--money);background:linear-gradient(150deg,#1e3d16,var(--panel2))}
+.state-tile.visited{border-color:var(--clock);background:linear-gradient(150deg,#3d2a10,var(--panel2))}
+.state-tile .st-mark{display:block;font-size:18px;margin-top:6px;min-height:1.2em}
+@media (max-width:560px){
+  .states-grid{grid-template-columns:repeat(auto-fill,minmax(136px,1fr));gap:10px}
+  .fact-row{grid-template-columns:1fr 1fr;gap:10px}
+  .compass .cdir{width:50px;height:50px;font-size:19px}
+}
 </style>
 </head>
 <body data-subject="home">
@@ -352,11 +405,10 @@ button{font-family:var(--font)}
         <span class="tile-icon">📖</span>
         <span class="tile-name">Reading</span>
       </button>
-      <div class="tile soon">
-        <span class="soon-label">Coming Soon</span>
+      <button class="tile states" data-open="states">
         <span class="tile-icon">🗺️</span>
         <span class="tile-name">States</span>
-      </div>
+      </button>
     </div>
   </div>
 </div>
@@ -672,6 +724,89 @@ button{font-family:var(--font)}
   </div>
 </div>
 
+<div class="screen" id="screen-states">
+  <div class="wrap">
+    <nav class="topnav">
+      <button class="home-btn" data-home>← Home</button>
+      <div class="subject-title">🗺️ States</div>
+      <button class="speak-btn top" id="speak-states">🔊 Read Aloud</button>
+    </nav>
+    <div class="tabs" role="tablist" data-tabs="states">
+      <button class="tab" role="tab" aria-selected="true" data-tab="shome">Where We Live</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="sregions">Regions</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="scompass">Compass</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="sall">All 50 States</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="smine">My Travels</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="spractice">Practice</button>
+    </div>
+
+    <div class="panel on" data-panel="shome">
+      <div class="card">
+        <div class="eyebrow">📍 This is where we are</div>
+        <div class="homebase">
+          <span class="hb-star">⭐</span>
+          <div class="hb-state">TEXAS</div>
+          <div class="hb-sub">We live in Texas &mdash; <b>just south of Austin</b>, and Austin is the capital of Texas.</div>
+        </div>
+        <div class="fact-row" id="txFacts"></div>
+        <div class="readout" id="stHomeRead" style="margin-top:22px">Tap a card above to hear about it.</div>
+      </div>
+    </div>
+
+    <div class="panel" data-panel="sregions">
+      <div class="card">
+        <div class="eyebrow">🧭 Four parts of the country</div>
+        <div class="level-note">The United States is one country, but people talk about it in big pieces. These are rough and friendly, not exact lines on a map.</div>
+        <div class="region-grid" id="regionGrid"></div>
+        <div class="readout" id="stRegionRead" style="margin-top:22px">Tap a region to hear about it.</div>
+      </div>
+    </div>
+
+    <div class="panel" data-panel="scompass">
+      <div class="card">
+        <div class="eyebrow">🧭 North, South, East, West</div>
+        <div class="level-note">Tap a direction to hear it. Remember it going clockwise: <b>N</b>ever <b>E</b>at <b>S</b>oggy <b>W</b>affles.</div>
+        <div class="compass">
+          <span class="cneedle">🧭</span>
+          <button class="cdir cn" type="button" data-dir="North">N</button>
+          <button class="cdir ce" type="button" data-dir="East">E</button>
+          <button class="cdir cs" type="button" data-dir="South">S</button>
+          <button class="cdir cw" type="button" data-dir="West">W</button>
+        </div>
+        <div class="readout" id="stCompassRead" style="margin-top:22px">Tap a direction to hear it.</div>
+      </div>
+    </div>
+
+    <div class="panel" data-panel="sall">
+      <div class="card">
+        <div class="eyebrow">All 50 states and their capitals</div>
+        <div class="level-note">Tap any state to hear its name and its capital. Texas is highlighted because that is home.</div>
+        <div class="states-grid" id="allStates"></div>
+        <div class="readout" id="stAllRead" style="margin-top:22px">Tap any state above to hear it.</div>
+      </div>
+    </div>
+
+    <div class="panel" data-panel="smine">
+      <div class="card">
+        <div class="eyebrow">🧳 Our family map</div>
+        <div class="level-note">Pick a color, then tap states. Green for states we have <b>lived</b> in, orange for states we have <b>traveled</b> to. It saves on this device.</div>
+        <div class="travel-bar">
+          <button class="travel-mode" type="button" data-mode="lived" aria-pressed="true">🏠 Lived in</button>
+          <button class="travel-mode" type="button" data-mode="visited" aria-pressed="false">✈️ Traveled to</button>
+          <button class="travel-mode" type="button" data-mode="clear" aria-pressed="false">🧽 Erase</button>
+        </div>
+        <div class="tally" id="travelTally"></div>
+        <div class="states-grid" id="myStates"></div>
+        <div class="readout" id="stMineRead" style="margin-top:22px">Tap the states your family has been to.</div>
+      </div>
+    </div>
+
+    <div class="panel" data-panel="spractice">
+      <div class="card" id="quiz-states"></div>
+    </div>
+  </div>
+</div>
+
 <div class="screen" id="screen-devotion">
   <div class="wrap">
     <nav class="topnav">
@@ -831,6 +966,7 @@ $$("[data-tabs]").forEach(function(tabs){
       if(t.dataset.tab==="mpractice") startQuiz("money");
       if(t.dataset.tab==="cpractice") startQuiz("clock");
       if(t.dataset.tab==="rpractice") startQuiz("reading");
+      if(t.dataset.tab==="spractice") startQuiz("states");
       if(t.dataset.tab==="count") newCountRound();
       if(t.dataset.tab==="match") buildMatchQuiz();
     });
@@ -1153,7 +1289,7 @@ function soundOut(word){
   return parts.join(", ")+" ... "+word+".";
 }
 function litOnly(el,cls){
-  $("."+cls).forEach(function(x){x.classList.remove("lit")});
+  $$("."+cls).forEach(function(x){x.classList.remove("lit")});
   el.classList.add("lit");
 }
 
@@ -1175,10 +1311,10 @@ function buildReading(){
   W2.forEach(function(w){
     var b=document.createElement("button");
     b.type="button"; b.className="word-tile";
-    b.innerHTML=w+'<span class="word-sound">sight word</span>';
+    b.textContent=w;
     b.addEventListener("click",function(){
       litOnly(b,"word-tile");
-      $("#w2Read").innerHTML='<b>'+w+'</b> &mdash; a sight word. Say it whole, don&rsquo;t sound it out.';
+      $("#w2Read").innerHTML='<b>'+w+'</b> &mdash; say it whole, don&rsquo;t sound it out.';
       say(w+". "+w+".");
     });
     g2.appendChild(b);
@@ -1421,7 +1557,8 @@ function startQuiz(subject){
 }
 function nextQuestion(){
   stopReadingSequence();
-  var makers=quiz.subject==="time"?timeMakers():(quiz.subject==="money"?moneyMakers():(quiz.subject==="reading"?readingMakers():clockMakers()));
+  var makerFns={time:timeMakers,money:moneyMakers,reading:readingMakers,states:statesMakers,clock:clockMakers};
+  var makers=(makerFns[quiz.subject]||clockMakers)();
   var made=makers[Math.floor(Math.random()*makers.length)]();
   var opts=[made.a];
   while(opts.length<3 && opts.length<made.pool.length){
@@ -1526,10 +1663,203 @@ function finish(){
   say(msg.say);
 }
 
+/* ===================== STATES ===================== */
+var HOME_STATE="Texas", HOME_CAPITAL="Austin";
+var STATES=[
+  {n:"Alabama",c:"Montgomery",r:"South"},        {n:"Alaska",c:"Juneau",r:"West"},
+  {n:"Arizona",c:"Phoenix",r:"West"},            {n:"Arkansas",c:"Little Rock",r:"South"},
+  {n:"California",c:"Sacramento",r:"West"},      {n:"Colorado",c:"Denver",r:"West"},
+  {n:"Connecticut",c:"Hartford",r:"Northeast"},  {n:"Delaware",c:"Dover",r:"South"},
+  {n:"Florida",c:"Tallahassee",r:"South"},       {n:"Georgia",c:"Atlanta",r:"South"},
+  {n:"Hawaii",c:"Honolulu",r:"West"},            {n:"Idaho",c:"Boise",r:"West"},
+  {n:"Illinois",c:"Springfield",r:"Midwest"},    {n:"Indiana",c:"Indianapolis",r:"Midwest"},
+  {n:"Iowa",c:"Des Moines",r:"Midwest"},         {n:"Kansas",c:"Topeka",r:"Midwest"},
+  {n:"Kentucky",c:"Frankfort",r:"South"},        {n:"Louisiana",c:"Baton Rouge",r:"South"},
+  {n:"Maine",c:"Augusta",r:"Northeast"},         {n:"Maryland",c:"Annapolis",r:"South"},
+  {n:"Massachusetts",c:"Boston",r:"Northeast"},  {n:"Michigan",c:"Lansing",r:"Midwest"},
+  {n:"Minnesota",c:"Saint Paul",r:"Midwest"},    {n:"Mississippi",c:"Jackson",r:"South"},
+  {n:"Missouri",c:"Jefferson City",r:"Midwest"}, {n:"Montana",c:"Helena",r:"West"},
+  {n:"Nebraska",c:"Lincoln",r:"Midwest"},        {n:"Nevada",c:"Carson City",r:"West"},
+  {n:"New Hampshire",c:"Concord",r:"Northeast"}, {n:"New Jersey",c:"Trenton",r:"Northeast"},
+  {n:"New Mexico",c:"Santa Fe",r:"West"},        {n:"New York",c:"Albany",r:"Northeast"},
+  {n:"North Carolina",c:"Raleigh",r:"South"},    {n:"North Dakota",c:"Bismarck",r:"Midwest"},
+  {n:"Ohio",c:"Columbus",r:"Midwest"},           {n:"Oklahoma",c:"Oklahoma City",r:"South"},
+  {n:"Oregon",c:"Salem",r:"West"},               {n:"Pennsylvania",c:"Harrisburg",r:"Northeast"},
+  {n:"Rhode Island",c:"Providence",r:"Northeast"},{n:"South Carolina",c:"Columbia",r:"South"},
+  {n:"South Dakota",c:"Pierre",r:"Midwest"},     {n:"Tennessee",c:"Nashville",r:"South"},
+  {n:"Texas",c:"Austin",r:"South"},              {n:"Utah",c:"Salt Lake City",r:"West"},
+  {n:"Vermont",c:"Montpelier",r:"Northeast"},    {n:"Virginia",c:"Richmond",r:"South"},
+  {n:"Washington",c:"Olympia",r:"West"},         {n:"West Virginia",c:"Charleston",r:"South"},
+  {n:"Wisconsin",c:"Madison",r:"Midwest"},       {n:"Wyoming",c:"Cheyenne",r:"West"}
+];
+var REGIONS=[
+  {name:"West",icon:"🌄",where:"The far left of the map",
+   desc:"Mountains, deserts and the Pacific Ocean. The states right on the ocean — California, Oregon and Washington — are called the West Coast. Alaska and Hawaii are out here too.",
+   say:"The West. This is the far left side of the map. It has mountains, deserts, and the Pacific Ocean. The states that touch the ocean, California, Oregon and Washington, are called the West Coast."},
+  {name:"Midwest",icon:"🌾",where:"The middle, up top",
+   desc:"Big flat farms, corn fields and the Great Lakes. People sometimes call it the heartland because it sits in the middle.",
+   say:"The Midwest. This is the middle of the country, up toward the top. It has big flat farms, corn fields, and the Great Lakes."},
+  {name:"South",icon:"🌞",where:"The bottom — this is us!",
+   desc:"Warm weather, the Gulf of Mexico, and lots of music and barbecue. Texas is in the South, so this is our region.",
+   say:"The South. This is the bottom of the country. It is warm, it has the Gulf of Mexico, and it is full of music and barbecue. Texas is in the South, so this is our region."},
+  {name:"Northeast",icon:"🍁",where:"The top right corner",
+   desc:"The smallest states, packed close together. Snowy winters, big old cities, and where the country first began.",
+   say:"The Northeast. This is the top right corner. It has the smallest states packed close together, snowy winters, big old cities, and it is where our country first began."}
+];
+var TX_FACTS=[
+  {k:"Our capital",v:"Austin",say:"The capital of Texas is Austin. A capital is the city where the leaders of the state work. We live just south of Austin."},
+  {k:"Our state",v:"Texas",say:"We live in Texas. Texas is the second biggest state in the whole country. Only Alaska is bigger."},
+  {k:"Our region",v:"The South",say:"Texas is in the South. That is the bottom part of the country, where it is warm."},
+  {k:"Nickname",v:"Lone Star State",say:"Texas is called the Lone Star State, because our flag has one single star on it."},
+  {k:"Biggest city",v:"Houston",say:"The biggest city in Texas is Houston. But the capital is still Austin, because a capital is not always the biggest city."},
+  {k:"Next door",v:"4 states",say:"Texas touches four states. Oklahoma to the north, Arkansas and Louisiana to the east, and New Mexico to the west. To the south is the country of Mexico."}
+];
+var COMPASS={
+  North:{emoji:"⬆️",say:"North. North is up. On a map, north is the top. From Texas, if you go north you get to Oklahoma."},
+  South:{emoji:"⬇️",say:"South. South is down. On a map, south is the bottom. From Texas, if you go south you reach Mexico."},
+  East:{emoji:"➡️",say:"East. East is to the right. On a map, east is where the sun comes up. From Texas, if you go east you get to Louisiana."},
+  West:{emoji:"⬅️",say:"West. West is to the left. On a map, west is where the sun goes down. From Texas, if you go west you get to New Mexico."}
+};
+
+var travelMode="lived", travelMarks={};
+function loadTravel(){
+  try{ travelMarks=JSON.parse(localStorage.getItem("hb_travel")||"{}")||{}; }
+  catch(e){ travelMarks={}; }
+}
+function saveTravel(){
+  try{ localStorage.setItem("hb_travel",JSON.stringify(travelMarks)); }catch(e){}
+}
+function renderTally(){
+  var lived=0,vis=0;
+  for(var k in travelMarks){ if(travelMarks[k]==="lived") lived++; else if(travelMarks[k]==="visited") vis++; }
+  $("#travelTally").innerHTML='<span>🏠 Lived in <b>'+lived+'</b></span><span>✈️ Traveled to <b>'+vis+'</b></span><span>🗺️ Left to go <b>'+(50-lived-vis)+'</b></span>';
+}
+
+function buildStates(){
+  var f=$("#txFacts");
+  TX_FACTS.forEach(function(o){
+    var b=document.createElement("button");
+    b.type="button"; b.className="fact";
+    b.innerHTML='<span class="fact-k">'+o.k+'</span><span class="fact-v">'+o.v+'</span>';
+    b.addEventListener("click",function(){
+      litOnly(b,"fact");
+      $("#stHomeRead").innerHTML='<b>'+o.k+':</b> '+o.v;
+      say(o.say);
+    });
+    f.appendChild(b);
+  });
+
+  var rg=$("#regionGrid");
+  REGIONS.forEach(function(o){
+    var b=document.createElement("button");
+    b.type="button"; b.className="region-card";
+    var names=STATES.filter(function(s){return s.r===o.name}).map(function(s){return s.n});
+    b.innerHTML='<div class="rg-top"><span>'+o.icon+'</span><span>'+o.name+'</span></div>'+
+      '<div class="rg-where">'+o.where+'</div>'+
+      '<div class="rg-desc">'+o.desc+'</div>'+
+      '<div class="rg-list">'+names.length+' states &mdash; '+names.slice(0,5).join(", ")+'&hellip;</div>';
+    b.addEventListener("click",function(){
+      litOnly(b,"region-card");
+      $("#stRegionRead").innerHTML='<b>'+o.name+'</b> &mdash; '+names.length+' states.';
+      say(o.say);
+    });
+    rg.appendChild(b);
+  });
+
+  $$(".cdir").forEach(function(b){
+    b.addEventListener("click",function(){
+      litOnly(b,"cdir");
+      var d=b.dataset.dir, o=COMPASS[d];
+      $("#stCompassRead").innerHTML=o.emoji+' <b>'+d+'</b>';
+      say(o.say);
+    });
+  });
+
+  var all=$("#allStates");
+  STATES.forEach(function(s){
+    var b=document.createElement("button");
+    b.type="button"; b.className="state-tile"+(s.n===HOME_STATE?" home-state":"");
+    b.innerHTML='<span class="st-name">'+(s.n===HOME_STATE?"⭐ ":"")+s.n+'</span><span class="st-cap">capital: <b>'+s.c+'</b></span>';
+    b.addEventListener("click",function(){
+      litOnly(b,"state-tile");
+      $("#stAllRead").innerHTML='<b>'+s.n+'</b> &mdash; capital <b>'+s.c+'</b> &mdash; in the '+s.r+'.';
+      say(s.n===HOME_STATE
+        ? "Texas. That is our state! The capital of Texas is Austin, and we live just south of Austin."
+        : s.n+". The capital of "+s.n+" is "+s.c+". It is in the "+s.r+".");
+    });
+    all.appendChild(b);
+  });
+
+  loadTravel();
+  var mine=$("#myStates");
+  STATES.forEach(function(s){
+    var b=document.createElement("button");
+    b.type="button"; b.className="state-tile";
+    b.innerHTML='<span class="st-name">'+s.n+'</span><span class="st-mark"></span>';
+    var paint=function(){
+      var m=travelMarks[s.n];
+      b.classList.remove("lived","visited");
+      if(m) b.classList.add(m);
+      $(".st-mark",b).textContent = m==="lived" ? "🏠 lived here" : (m==="visited" ? "✈️ been there" : "");
+    };
+    paint();
+    b.addEventListener("click",function(){
+      if(travelMode==="clear"){ delete travelMarks[s.n]; say(s.n+" cleared."); }
+      else { travelMarks[s.n]=travelMode;
+        say(travelMode==="lived" ? "We lived in "+s.n+"." : "We traveled to "+s.n+".");
+      }
+      paint(); saveTravel(); renderTally();
+      $("#stMineRead").innerHTML='<b>'+s.n+'</b> &mdash; '+(travelMarks[s.n]==="lived"?"lived in":(travelMarks[s.n]==="visited"?"traveled to":"cleared"));
+    });
+    mine.appendChild(b);
+  });
+  renderTally();
+
+  $$(".travel-mode").forEach(function(b){
+    b.addEventListener("click",function(){
+      travelMode=b.dataset.mode;
+      $$(".travel-mode").forEach(function(x){x.setAttribute("aria-pressed", x===b ? "true":"false")});
+      say(travelMode==="lived"?"Now tap the states we have lived in.":(travelMode==="visited"?"Now tap the states we have traveled to.":"Now tap a state to erase it."));
+    });
+  });
+
+  $("#speak-states").addEventListener("click",function(){
+    var open=$('.tab[aria-selected="true"]',$('[data-tabs="states"]')).dataset.tab;
+    if(open==="shome") say("We live in Texas. The capital of Texas is Austin, and our home is just south of Austin. A capital is the city where the leaders of a state work. Tap any card to learn more.");
+    else if(open==="sregions") say("The United States is split into four big parts. The West, the Midwest, the South, and the Northeast. We live in Texas, so we are in the South. Tap a region to hear about it.");
+    else if(open==="scompass") say("There are four main directions. North is up, south is down, east is right, and west is left. Going around like a clock, remember, Never Eat Soggy Waffles.");
+    else if(open==="sall") say("There are fifty states, and every single one has a capital city. Tap any state to hear its name and its capital.");
+    else if(open==="smine") say("This is our family map. Pick lived in or traveled to, then tap the states. Which states have you lived in? Which ones have you traveled to?");
+    else say("Let's practice our states and capitals!");
+  });
+}
+
+function statesMakers(){
+  var names=STATES.map(function(s){return s.n});
+  var caps=STATES.map(function(s){return s.c});
+  var regions=REGIONS.map(function(r){return r.name});
+  var dirs=["North","South","East","West"];
+  return [
+    function(){var s=pick(STATES);return{q:"What is the capital of "+s.n+"?",a:s.c,pool:caps}},
+    function(){var s=pick(STATES);return{q:s.c+" is the capital of which state?",a:s.n,pool:names}},
+    function(){return{q:"Which state do we live in?",a:HOME_STATE,pool:names}},
+    function(){return{q:"What is the capital of Texas?",a:HOME_CAPITAL,pool:caps}},
+    function(){return{q:"We live just south of which city?",a:HOME_CAPITAL,pool:caps}},
+    function(){var s=pick(STATES);return{q:"Which part of the country is "+s.n+" in?",a:s.r,pool:regions}},
+    function(){return{q:"Which region is Texas in?",a:"South",pool:regions}},
+    function(){return{q:"On a map, which direction is UP?",a:"North",pool:dirs}},
+    function(){return{q:"On a map, which direction is DOWN?",a:"South",pool:dirs}},
+    function(){return{q:"Which direction does the sun come up?",a:"East",pool:dirs}},
+    function(){return{q:"California, Oregon and Washington are called the West what?",a:"Coast",pool:["Coast","Corner","Country","Center"]}},
+    function(){return{q:"How many states are in the United States?",a:"50",pool:["50","13","100","20"]}}
+  ];
+}
+
 initTime();
 initMoney();
 initDevotions();
 buildReading();
+buildStates();
 if("speechSynthesis" in window) window.speechSynthesis.onvoiceschanged=function(){ getBestVoice(); };
 
 /* Inline onclick handlers resolve against global scope, so export them out of the IIFE */
