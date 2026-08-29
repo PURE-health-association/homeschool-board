@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Time &amp; Calendar — Learning Board</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#FCF7EE;
+  --ink-dim:rgba(252,247,238,.62);
+  --line:rgba(252,247,238,.16);
+  --radius:20px;
+  --display:'Bricolage Grotesque',system-ui,sans-serif;
+  --body:'Atkinson Hyperlegible',system-ui,sans-serif;
+}
+body[data-season="spring"]{ --bg:#12281C; --panel:#1B3A28; --accent:#A6E86B; --accent2:#F6A5C4; --accent-ink:#0D1F14; }
+body[data-season="summer"]{ --bg:#0D2A2B; --panel:#153B3C; --accent:#FFC94A; --accent2:#4ECDC4; --accent-ink:#241A00; }
+body[data-season="fall"]{   --bg:#2A180F; --panel:#3C2417; --accent:#FF9F45; --accent2:#E8663A; --accent-ink:#2A1000; }
+body[data-season="winter"]{ --bg:#111D33; --panel:#1B2B47; --accent:#8FD3FF; --accent2:#C9B8FF; --accent-ink:#06182B; }
+
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--body);
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+  transition:background .6s ease;
+}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(120% 80% at 50% -20%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 60%);
+}
+.wrap{position:relative;z-index:1;max-width:1400px;margin:0 auto;padding:16px 18px 40px}
+
+/* ---------- top bar ---------- */
+.topbar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:18px}
+.mark{font-family:var(--display);font-weight:800;font-size:clamp(18px,2.4vw,26px);letter-spacing:-.02em;line-height:1}
+.mark span{color:var(--accent)}
+.seasonpill{
+  font-family:var(--body);font-weight:700;font-size:clamp(12px,1.5vw,15px);
+  background:var(--accent);color:var(--accent-ink);padding:7px 14px;border-radius:999px;
+}
+.speak{
+  margin-left:auto;background:transparent;border:2px solid var(--line);color:var(--ink);
+  font-family:var(--body);font-weight:700;font-size:clamp(13px,1.6vw,16px);
+  padding:10px 18px;border-radius:999px;cursor:pointer;display:flex;align-items:center;gap:8px;
+}
+.speak:hover,.speak:focus-visible{border-color:var(--accent);color:var(--accent)}
+
+/* ---------- tabs ---------- */
+.tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:22px;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{
+  flex:0 0 auto;font-family:var(--display);font-weight:700;
+  font-size:clamp(15px,2vw,21px);letter-spacing:-.01em;
+  padding:12px 22px;border-radius:999px;border:2px solid var(--line);
+  background:transparent;color:var(--ink-dim);cursor:pointer;transition:.18s;
+}
+.tab:hover{color:var(--ink);border-color:var(--ink-dim)}
+.tab[aria-selected="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+
+/* ---------- panels ---------- */
+.panel{display:none;animation:rise .35s ease both}
+.panel.on{display:block}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+.card{background:var(--panel);border-radius:var(--radius);padding:clamp(18px,2.6vw,32px)}
+.eyebrow{
+  font-family:var(--body);font-weight:700;text-transform:uppercase;
+  letter-spacing:.14em;font-size:clamp(11px,1.3vw,14px);color:var(--accent);margin-bottom:12px;
+}
+
+/* ---------- TODAY ---------- */
+.today-grid{display:grid;grid-template-columns:1.35fr 1fr;gap:16px}
+.bigday{
+  font-family:var(--display);font-weight:800;letter-spacing:-.03em;line-height:.86;
+  font-size:clamp(56px,12vw,150px);color:var(--accent);
+}
+.bigdate{
+  font-family:var(--display);font-weight:700;letter-spacing:-.02em;
+  font-size:clamp(24px,4.4vw,54px);margin-top:14px;line-height:1.05;
+}
+.neighbors{display:grid;gap:12px}
+.nb{background:rgba(0,0,0,.22);border-radius:16px;padding:clamp(14px,2vw,22px)}
+.nb b{display:block;font-family:var(--display);font-weight:700;font-size:clamp(22px,3.4vw,40px);letter-spacing:-.02em}
+.nb small{font-family:var(--body);font-weight:700;font-size:clamp(12px,1.4vw,15px);color:var(--ink-dim);text-transform:uppercase;letter-spacing:.12em}
+
+/* ---------- WEEK ---------- */
+.weekstrip{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;margin-top:6px}
+.daybtn{
+  background:rgba(0,0,0,.22);border:2px solid transparent;border-radius:16px;
+  padding:clamp(14px,2vw,26px) 6px;cursor:pointer;color:var(--ink);text-align:center;transition:.18s;
+}
+.daybtn:hover{border-color:var(--ink-dim)}
+.daybtn .abbr{font-family:var(--display);font-weight:800;font-size:clamp(20px,3.2vw,44px);letter-spacing:-.02em;line-height:1}
+.daybtn .num{font-family:var(--body);font-weight:700;font-size:clamp(11px,1.3vw,15px);color:var(--ink-dim);margin-top:8px}
+.daybtn.is-today{background:var(--accent);color:var(--accent-ink)}
+.daybtn.is-today .num{color:var(--accent-ink);opacity:.75}
+.daybtn.is-weekend .abbr{color:var(--accent2)}
+.daybtn.is-today .abbr{color:var(--accent-ink)}
+.readout{
+  margin-top:18px;font-family:var(--display);font-weight:700;letter-spacing:-.02em;
+  font-size:clamp(20px,3.2vw,40px);min-height:1.2em;line-height:1.25;
+}
+.readout em{font-style:normal;color:var(--accent)}
+
+/* ---------- MONTH GRID ---------- */
+.calhead{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:16px}
+.calhead h2{font-family:var(--display);font-weight:800;letter-spacing:-.03em;font-size:clamp(30px,5.5vw,66px);line-height:1}
+.calhead p{font-family:var(--body);font-weight:700;color:var(--ink-dim);font-size:clamp(13px,1.7vw,18px)}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.cal .dow{
+  font-family:var(--body);font-weight:700;text-align:center;color:var(--ink-dim);
+  font-size:clamp(11px,1.5vw,16px);text-transform:uppercase;letter-spacing:.1em;padding-bottom:8px;
+}
+.cal .cell{
+  aspect-ratio:1/.82;display:flex;align-items:center;justify-content:center;border-radius:12px;
+  background:rgba(0,0,0,.2);font-family:var(--display);font-weight:700;
+  font-size:clamp(14px,2.3vw,30px);letter-spacing:-.02em;
+}
+.cal .cell.blank{background:transparent}
+.cal .cell.today{background:var(--accent);color:var(--accent-ink);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 35%,transparent)}
+.cal .cell.past{color:var(--ink-dim)}
+
+/* ---------- YEAR RIBBON (signature) ---------- */
+.ribbon{display:grid;grid-template-columns:repeat(12,1fr);gap:5px;margin-top:8px}
+.mo{
+  border-radius:12px;padding:clamp(12px,1.8vw,20px) 4px;text-align:center;cursor:pointer;
+  border:2px solid transparent;transition:.18s;color:var(--ink);background:rgba(0,0,0,.22);
+}
+.mo .mabbr{font-family:var(--display);font-weight:800;font-size:clamp(13px,1.9vw,26px);letter-spacing:-.02em;line-height:1}
+.mo .mnum{font-family:var(--body);font-weight:700;font-size:clamp(10px,1.1vw,13px);color:var(--ink-dim);margin-top:6px}
+.mo:hover{border-color:var(--ink-dim)}
+.mo.now{background:var(--accent);color:var(--accent-ink)}
+.mo.now .mnum{color:var(--accent-ink);opacity:.75}
+.mo[data-s="spring"] .mabbr{color:#A6E86B}
+.mo[data-s="summer"] .mabbr{color:#FFC94A}
+.mo[data-s="fall"]   .mabbr{color:#FF9F45}
+.mo[data-s="winter"] .mabbr{color:#8FD3FF}
+.mo.now .mabbr{color:var(--accent-ink)}
+.legend{display:flex;gap:18px;flex-wrap:wrap;margin-top:20px}
+.legend span{display:flex;align-items:center;gap:8px;font-family:var(--body);font-weight:700;font-size:clamp(12px,1.5vw,16px);color:var(--ink-dim)}
+.dot{width:14px;height:14px;border-radius:50%}
+
+/* ---------- SEASONS ---------- */
+.seasons{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.sea{
+  border-radius:18px;padding:clamp(16px,2.4vw,30px);background:rgba(0,0,0,.22);
+  border:3px solid transparent;cursor:pointer;color:var(--ink);text-align:left;transition:.18s;
+}
+.sea:hover{border-color:var(--ink-dim)}
+.sea.now{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 14%,transparent)}
+.sea .icon{font-size:clamp(30px,5vw,60px);line-height:1;display:block;margin-bottom:10px}
+.sea h3{font-family:var(--display);font-weight:800;letter-spacing:-.02em;font-size:clamp(19px,2.8vw,34px);margin-bottom:8px}
+.sea p{font-family:var(--body);font-size:clamp(12px,1.5vw,17px);color:var(--ink-dim);line-height:1.5}
+.sea.now h3{color:var(--accent)}
+
+/* ---------- PRACTICE ---------- */
+.q{font-family:var(--display);font-weight:800;letter-spacing:-.025em;font-size:clamp(26px,4.6vw,58px);line-height:1.1;margin-bottom:24px}
+.opts{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.opt{
+  background:rgba(0,0,0,.22);border:3px solid transparent;border-radius:18px;
+  padding:clamp(18px,3vw,36px) 10px;cursor:pointer;color:var(--ink);
+  font-family:var(--display);font-weight:700;letter-spacing:-.02em;
+  font-size:clamp(18px,2.8vw,36px);transition:.15s;
+}
+.opt:hover:not(:disabled){border-color:var(--ink-dim)}
+.opt.right{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.opt.wrong{border-color:var(--accent2);opacity:.55}
+.opt:disabled{cursor:default}
+.scorebar{display:flex;align-items:center;gap:20px;margin-top:26px;flex-wrap:wrap}
+.score{font-family:var(--display);font-weight:800;font-size:clamp(18px,2.4vw,30px);letter-spacing:-.02em}
+.score b{color:var(--accent)}
+.next{
+  background:var(--accent);color:var(--accent-ink);border:none;border-radius:999px;
+  font-family:var(--display);font-weight:800;font-size:clamp(15px,2vw,22px);
+  padding:14px 32px;cursor:pointer;letter-spacing:-.01em;
+}
+.next[hidden]{display:none}
+
+:focus-visible{outline:3px solid var(--accent2);outline-offset:3px}
+@media (max-width:860px){
+  .today-grid{grid-template-columns:1fr}
+  .seasons{grid-template-columns:repeat(2,1fr)}
+  .opts{grid-template-columns:1fr}
+  .ribbon{grid-template-columns:repeat(6,1fr)}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <div class="mark">Learning Board <span>/ Time</span></div>
+    <div class="seasonpill" id="seasonPill">Summer</div>
+    <button class="speak" id="speakBtn" type="button">🔊 Read it out loud</button>
+  </div>
+
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" aria-selected="true" data-p="today">Today</button>
+    <button class="tab" role="tab" aria-selected="false" data-p="week">Days of the Week</button>
+    <button class="tab" role="tab" aria-selected="false" data-p="month">This Month</button>
+    <button class="tab" role="tab" aria-selected="false" data-p="year">Months &amp; Seasons</button>
+    <button class="tab" role="tab" aria-selected="false" data-p="practice">Practice</button>
+  </div>
+
+  <!-- TODAY -->
+  <section class="panel on" id="p-today">
+    <div class="today-grid">
+      <div class="card">
+        <div class="eyebrow">Today is</div>
+        <div class="bigday" id="todayName">—</div>
+        <div class="bigdate" id="todayFull">—</div>
+      </div>
+      <div class="neighbors">
+        <div class="nb"><small>Yesterday was</small><b id="yName">—</b></div>
+        <div class="nb"><small>Tomorrow will be</small><b id="tName">—</b></div>
+        <div class="nb"><small>Right now the season is</small><b id="sName">—</b></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WEEK -->
+  <section class="panel" id="p-week">
+    <div class="card">
+      <div class="eyebrow">7 days make one week — tap a day</div>
+      <div class="weekstrip" id="weekStrip"></div>
+      <div class="readout" id="weekRead">Tap a day to learn about it.</div>
+    </div>
+  </section>
+
+  <!-- MONTH -->
+  <section class="panel" id="p-month">
+    <div class="card">
+      <div class="calhead">
+        <h2 id="monthTitle">—</h2>
+        <p id="monthFacts">—</p>
+      </div>
+      <div class="cal" id="calGrid"></div>
+    </div>
+  </section>
+
+  <!-- YEAR -->
+  <section class="panel" id="p-year">
+    <div class="card" style="margin-bottom:16px">
+      <div class="eyebrow">12 months make one year — tap a month</div>
+      <div class="ribbon" id="ribbon"></div>
+      <div class="readout" id="yearRead">Tap a month to learn about it.</div>
+      <div class="legend">
+        <span><i class="dot" style="background:#A6E86B"></i>Spring</span>
+        <span><i class="dot" style="background:#FFC94A"></i>Summer</span>
+        <span><i class="dot" style="background:#FF9F45"></i>Fall</span>
+        <span><i class="dot" style="background:#8FD3FF"></i>Winter</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="eyebrow">4 seasons make one year</div>
+      <div class="seasons" id="seasonGrid"></div>
+    </div>
+  </section>
+
+  <!-- PRACTICE -->
+  <section class="panel" id="p-practice">
+    <div class="card">
+      <div class="eyebrow">Practice</div>
+      <div class="q" id="qText">—</div>
+      <div class="opts" id="qOpts"></div>
+      <div class="scorebar">
+        <div class="score">Score: <b id="scoreNum">0</b> / <span id="scoreTot">0</span></div>
+        <button class="next" id="nextBtn" type="button" hidden>Next question →</button>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var DAYS=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+  var DABBR=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+  var MONTHS=["January","February","March","April","May","June","July","August","September","October","November","December"];
+  var MABBR=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  var SEASON_OF=["winter","winter","spring","spring","spring","summer","summer","summer","fall","fall","fall","winter"];
+  var SEASON_NAME={spring:"Spring",summer:"Summer",fall:"Fall",winter:"Winter"};
+
+  var SEASONS=[
+    {k:"spring",icon:"🌱",name:"Spring",months:"March · April · May",blurb:"Plants start to grow. Rain falls, flowers open, and baby animals are born."},
+    {k:"summer",icon:"☀️",name:"Summer",months:"June · July · August",blurb:"The hottest season. Days are long and the sun stays up late."},
+    {k:"fall",  icon:"🍂",name:"Fall",  months:"September · October · November",blurb:"Leaves change color and fall down. The air gets cooler."},
+    {k:"winter",icon:"❄️",name:"Winter",months:"December · January · February",blurb:"The coldest season. Days are short and many places get snow."}
+  ];
+
+  var DAYFACT=[
+    "Sunday is the first day of the week on a calendar. It is part of the weekend.",
+    "Monday comes after Sunday. It is usually the first school day.",
+    "Tuesday is the second school day of the week.",
+    "Wednesday is right in the middle of the week.",
+    "Thursday comes just before Friday.",
+    "Friday is the last school day. The weekend starts next.",
+    "Saturday is part of the weekend. No school today."
+  ];
+
+  var now=new Date();
+  var todayIdx=now.getDay();
+  var seasonKey=SEASON_OF[now.getMonth()];
+  document.body.setAttribute("data-season",seasonKey);
+  document.getElementById("seasonPill").textContent=SEASON_NAME[seasonKey];
+
+  function daysInMonth(y,m){return new Date(y,m+1,0).getDate();}
+  function ordinal(n){var s=["th","st","nd","rd"],v=n%100;return n+(s[(v-20)%10]||s[v]||s[0]);}
+
+  /* ---- TODAY ---- */
+  var yest=new Date(now); yest.setDate(now.getDate()-1);
+  var tmrw=new Date(now); tmrw.setDate(now.getDate()+1);
+  document.getElementById("todayName").textContent=DAYS[todayIdx];
+  document.getElementById("todayFull").textContent=MONTHS[now.getMonth()]+" "+ordinal(now.getDate())+", "+now.getFullYear();
+  document.getElementById("yName").textContent=DAYS[yest.getDay()];
+  document.getElementById("tName").textContent=DAYS[tmrw.getDay()];
+  document.getElementById("sName").textContent=SEASON_NAME[seasonKey];
+
+  /* ---- WEEK ---- */
+  var strip=document.getElementById("weekStrip");
+  var weekRead=document.getElementById("weekRead");
+  DAYS.forEach(function(d,i){
+    var b=document.createElement("button");
+    b.type="button"; b.className="daybtn";
+    if(i===todayIdx) b.classList.add("is-today");
+    if(i===0||i===6) b.classList.add("is-weekend");
+    b.innerHTML='<div class="abbr">'+DABBR[i]+'</div><div class="num">Day '+(i+1)+'</div>';
+    b.addEventListener("click",function(){
+      var after=DAYS[(i+1)%7], before=DAYS[(i+6)%7];
+      weekRead.innerHTML='<em>'+d+'</em> — '+DAYFACT[i]+' Before it comes <em>'+before+'</em>. After it comes <em>'+after+'</em>.';
+      say(d+". "+DAYFACT[i]+" Before it comes "+before+". After it comes "+after+".");
+    });
+    strip.appendChild(b);
+  });
+
+  /* ---- MONTH ---- */
+  var y=now.getFullYear(), m=now.getMonth(), dim=daysInMonth(y,m), first=new Date(y,m,1).getDay();
+  document.getElementById("monthTitle").textContent=MONTHS[m]+" "+y;
+  document.getElementById("monthFacts").textContent=MONTHS[m]+" is month "+(m+1)+" of 12. It has "+dim+" days.";
+  var grid=document.getElementById("calGrid");
+  DABBR.forEach(function(a){var e=document.createElement("div");e.className="dow";e.textContent=a;grid.appendChild(e);});
+  for(var i=0;i<first;i++){var b=document.createElement("div");b.className="cell blank";grid.appendChild(b);}
+  for(var d=1;d<=dim;d++){
+    var c=document.createElement("div"); c.className="cell"; c.textContent=d;
+    if(d===now.getDate()) c.classList.add("today");
+    else if(d<now.getDate()) c.classList.add("past");
+    grid.appendChild(c);
+  }
+
+  /* ---- YEAR RIBBON ---- */
+  var rib=document.getElementById("ribbon"), yearRead=document.getElementById("yearRead");
+  MONTHS.forEach(function(mo,i){
+    var b=document.createElement("button");
+    b.type="button"; b.className="mo"+(i===m?" now":"");
+    b.setAttribute("data-s",SEASON_OF[i]);
+    b.innerHTML='<div class="mabbr">'+MABBR[i]+'</div><div class="mnum">'+(i+1)+'</div>';
+    b.addEventListener("click",function(){
+      var txt=mo+" is month "+(i+1)+" of 12. It has "+daysInMonth(y,i)+" days, and it is in "+SEASON_NAME[SEASON_OF[i]]+".";
+      yearRead.innerHTML='<em>'+mo+'</em> is month '+(i+1)+' of 12. It has <em>'+daysInMonth(y,i)+' days</em>, and it is in <em>'+SEASON_NAME[SEASON_OF[i]]+'</em>.';
+      say(txt);
+    });
+    rib.appendChild(b);
+  });
+
+  /* ---- SEASONS ---- */
+  var sg=document.getElementById("seasonGrid");
+  SEASONS.forEach(function(s){
+    var b=document.createElement("button");
+    b.type="button"; b.className="sea"+(s.k===seasonKey?" now":"");
+    b.innerHTML='<span class="icon">'+s.icon+'</span><h3>'+s.name+'</h3><p><strong>'+s.months+'</strong><br>'+s.blurb+'</p>';
+    b.addEventListener("click",function(){ say(s.name+". The months are "+s.months.replace(/·/g,",")+". "+s.blurb); });
+    sg.appendChild(b);
+  });
+
+  /* ---- TABS ---- */
+  var tabs=[].slice.call(document.querySelectorAll(".tab"));
+  tabs.forEach(function(t){
+    t.addEventListener("click",function(){
+      tabs.forEach(function(x){x.setAttribute("aria-selected","false");});
+      t.setAttribute("aria-selected","true");
+      document.querySelectorAll(".panel").forEach(function(p){p.classList.remove("on");});
+      document.getElementById("p-"+t.dataset.p).classList.add("on");
+      if(t.dataset.p==="practice") newQuestion();
+    });
+  });
+
+  /* ---- SPEAK ---- */
+  function say(text){
+    if(!("speechSynthesis" in window)) return;
+    window.speechSynthesis.cancel();
+    var u=new SpeechSynthesisUtterance(text);
+    u.rate=.85; u.pitch=1.05;
+    window.speechSynthesis.speak(u);
+  }
+  document.getElementById("speakBtn").addEventListener("click",function(){
+    var open=document.querySelector(".tab[aria-selected='true']").dataset.p;
+    if(open==="today"){
+      say("Today is "+DAYS[todayIdx]+", "+MONTHS[now.getMonth()]+" "+now.getDate()+", "+now.getFullYear()+
+          ". Yesterday was "+DAYS[yest.getDay()]+". Tomorrow will be "+DAYS[tmrw.getDay()]+
+          ". The season is "+SEASON_NAME[seasonKey]+".");
+    } else if(open==="week"){
+      say("There are seven days in a week. "+DAYS.join(", ")+".");
+    } else if(open==="month"){
+      say("This month is "+MONTHS[m]+". It has "+dim+" days. Today is the "+ordinal(now.getDate())+".");
+    } else if(open==="year"){
+      say("There are twelve months in a year. "+MONTHS.join(", ")+". And there are four seasons: Spring, Summer, Fall, and Winter.");
+    } else {
+      say(document.getElementById("qText").textContent);
+    }
+  });
+
+  /* ---- PRACTICE ---- */
+  var score=0,total=0;
+  var qText=document.getElementById("qText"),qOpts=document.getElementById("qOpts");
+  var scoreNum=document.getElementById("scoreNum"),scoreTot=document.getElementById("scoreTot");
+  var nextBtn=document.getElementById("nextBtn");
+
+  function pick(arr,not){var v;do{v=arr[Math.floor(Math.random()*arr.length)];}while(v===not);return v;}
+  function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+
+  var MAKERS=[
+    function(){var i=Math.floor(Math.random()*7);return{q:"What day comes AFTER "+DAYS[i]+"?",a:DAYS[(i+1)%7],pool:DAYS};},
+    function(){var i=Math.floor(Math.random()*7);return{q:"What day comes BEFORE "+DAYS[i]+"?",a:DAYS[(i+6)%7],pool:DAYS};},
+    function(){var i=Math.floor(Math.random()*12);return{q:"What month comes AFTER "+MONTHS[i]+"?",a:MONTHS[(i+1)%12],pool:MONTHS};},
+    function(){var i=Math.floor(Math.random()*12);return{q:"What month comes BEFORE "+MONTHS[i]+"?",a:MONTHS[(i+11)%12],pool:MONTHS};},
+    function(){var i=Math.floor(Math.random()*12);return{q:"Which season is "+MONTHS[i]+" in?",a:SEASON_NAME[SEASON_OF[i]],pool:["Spring","Summer","Fall","Winter"]};},
+    function(){return{q:"How many days are in one week?",a:"7",pool:["5","6","7","10","12"]};},
+    function(){return{q:"How many months are in one year?",a:"12",pool:["7","10","12","20","4"]};},
+    function(){return{q:"How many seasons are in one year?",a:"4",pool:["2","3","4","7","12"]};},
+    function(){return{q:"What day is TODAY?",a:DAYS[todayIdx],pool:DAYS};},
+    function(){return{q:"What season is it RIGHT NOW?",a:SEASON_NAME[seasonKey],pool:["Spring","Summer","Fall","Winter"]};},
+    function(){var i=Math.floor(Math.random()*12);return{q:"How many days are in "+MONTHS[i]+"?",a:String(daysInMonth(y,i)),pool:["28","29","30","31"]};}
+  ];
+
+  function newQuestion(){
+    nextBtn.hidden=true; qOpts.innerHTML="";
+    var made=MAKERS[Math.floor(Math.random()*MAKERS.length)]();
+    var opts=[made.a];
+    while(opts.length<3){var c=pick(made.pool);if(opts.indexOf(c)===-1)opts.push(c);}
+    shuffle(opts);
+    qText.textContent=made.q;
+    opts.forEach(function(o){
+      var b=document.createElement("button");
+      b.type="button"; b.className="opt"; b.textContent=o;
+      b.addEventListener("click",function(){
+        var all=[].slice.call(qOpts.children);
+        all.forEach(function(x){x.disabled=true;});
+        total++;
+        if(o===made.a){ score++; b.classList.add("right"); say("Correct! "+made.a); }
+        else{ b.classList.add("wrong");
+              all.forEach(function(x){if(x.textContent===made.a)x.classList.add("right");});
+              say("Not quite. The answer is "+made.a+"."); }
+        scoreNum.textContent=score; scoreTot.textContent=total;
+        nextBtn.hidden=false;
+      });
+      qOpts.appendChild(b);
+    });
+  }
+  nextBtn.addEventListener("click",newQuestion);
+  newQuestion();
+
+})();
+</script>
+</body>
+</html>
