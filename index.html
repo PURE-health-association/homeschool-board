@@ -2102,7 +2102,8 @@ function showChange(){
   var coins=makeChange(changeRound.change);
   var names={};
   coins.forEach(function(c){ names[c.name]=(names[c.name]||0)+1 });
-  var parts=[]; for(var n in names) parts.push(names[n]+" "+n.toLowerCase()+(names[n]>1?"s":""));
+  var PLURAL={Penny:"pennies",Nickel:"nickels",Dime:"dimes",Quarter:"quarters"};
+  var parts=[]; for(var n in names) parts.push(names[n]+" "+(names[n]>1?PLURAL[n]:n.toLowerCase()));
   var listed = parts.length ? parts.join(", ") : "nothing";
   $("#changeRead").innerHTML='<em>'+changeRound.paid+'¢ &minus; '+changeRound.price+'¢ = <b>'+changeRound.change+'¢</b></em><br>'+
     (changeRound.change? 'That is '+listed+'.' : 'You paid exactly right, so no change!');
