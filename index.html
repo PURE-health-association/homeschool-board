@@ -29,7 +29,7 @@ body[data-subject="home"]      { --accent:#FCF7EE;          --accent-ink:#0F1220
 
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
-body{background:var(--bg);color:var(--ink);font-family:var(--font);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);-webkit-font-smoothing:antialiased;overflow-x:hidden;overflow-wrap:break-word}
 button{font-family:var(--font)}
 :focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
@@ -221,6 +221,9 @@ button{font-family:var(--font)}
 .opt-visual .bill{width:110px;height:46px;font-size:22px;border-width:2px;margin:0}
 .opt-visual .season-emoji{font-size:44px;line-height:1}
 .opt-text{font-size:clamp(17px,2.4vw,28px);font-weight:700;letter-spacing:-.02em}
+/* reading answers are letters and short words - no image box to reserve */
+#quiz-reading .opt:not(:has(.opt-visual)){min-height:76px;padding:14px 10px}
+#quiz-reading .opt:not(:has(.opt-visual)) .opt-text{font-size:clamp(26px,6vw,40px);letter-spacing:.01em}
 .opt.speaking{background:var(--reading);border-color:#FFEBB0;color:var(--reading-ink);transform:scale(1.06);z-index:2;box-shadow:0 10px 30px rgba(255,210,76,.4)}
 .opt.speaking .opt-text{color:var(--reading-ink)}
 .opt.right{background:var(--right);color:#0F1220;border-color:var(--right)}
@@ -289,6 +292,9 @@ button{font-family:var(--font)}
 .play-btn{background:var(--accent);color:var(--accent-ink);border:none;border-radius:999px;font-weight:700;font-size:clamp(14px,1.8vw,18px);padding:12px 22px;cursor:pointer;letter-spacing:-.01em;font-family:var(--font);display:inline-flex;align-items:center;gap:6px}
 
 @media (max-width:820px){
+  /* every tab visible - no sideways scrolling for kids to discover */
+  .tabs{flex-wrap:wrap;overflow-x:visible;padding-bottom:0}
+  .tab{padding:11px 15px;font-size:15px;line-height:1.2}
   .today-grid{grid-template-columns:1fr}
   .seasons{grid-template-columns:repeat(2,1fr)}
   .opts{grid-template-columns:1fr}
@@ -297,6 +303,23 @@ button{font-family:var(--font)}
   .tiles{grid-template-columns:1fr}
   .tile{aspect-ratio:2/1}
   .clock-grid{grid-template-columns:1fr}
+}
+@media (max-width:560px){
+  .screen{padding:14px 12px 40px}
+  .subject-title{font-size:17px;padding:7px 14px}
+  .tab{padding:10px 13px;font-size:14px}
+  /* 7 day abbreviations no longer clip in 7 narrow columns */
+  .weekstrip{grid-template-columns:repeat(4,1fr)}
+  .ribbon{grid-template-columns:repeat(4,1fr)}
+  .birthdays{grid-template-columns:1fr}
+  /* time ladder stacks its result onto its own line */
+  .rung{grid-template-columns:auto 1fr;row-gap:6px;gap:10px}
+  .rung .rhs{grid-column:1 / -1}
+  .rung .lhs{min-width:62px;padding:6px 12px}
+  .abc-grid{grid-template-columns:repeat(auto-fill,minmax(74px,1fr));gap:10px}
+  .word-grid{grid-template-columns:repeat(auto-fill,minmax(102px,1fr));gap:10px}
+  .video-wrapper{width:96vw}
+  .video-close{top:10px;right:10px;width:44px;height:44px;font-size:20px}
 }
 </style>
 </head>
@@ -406,7 +429,7 @@ button{font-family:var(--font)}
       </div>
       <div class="card">
         <div class="eyebrow">📺 Watch the seasons</div>
-        <button class="watch-btn" onclick="playVideo('2B2BoYF5WMo','Season Detectives')">📺 Watch Video</button>
+        <button class="watch-btn" onclick="playVideo('2B2BoYF5WMo','Season Detectives - The Rhythms of Family Time')">📺 Watch Video</button>
       </div>
     </div>
     <div class="panel" data-panel="how">
