@@ -20,6 +20,8 @@
   --right:#7ED957; --wrong:#FF7A70;
   --reading:#FFD24C; --reading-ink:#1a1000;
   --states:#9B8CFF; --states-ink:#140a3a;
+  --health:#FF7B7B; --health-ink:#2e0606;
+  --smart:#7EC8FF; --smart-ink:#04223a;
 }
 body[data-subject="time"]      { --accent:var(--time);      --accent-ink:var(--time-ink); }
 body[data-subject="money"]     { --accent:var(--money);     --accent-ink:var(--money-ink); }
@@ -27,6 +29,8 @@ body[data-subject="clock"]     { --accent:var(--clock);     --accent-ink:var(--c
 body[data-subject="devotion"]  { --accent:var(--devotion);  --accent-ink:var(--devotion-ink); }
 body[data-subject="reading"]   { --accent:var(--reading);   --accent-ink:var(--reading-ink); }
 body[data-subject="states"]    { --accent:var(--states);    --accent-ink:var(--states-ink); }
+body[data-subject="health"]    { --accent:var(--health);    --accent-ink:var(--health-ink); }
+body[data-subject="smart"]     { --accent:var(--smart);     --accent-ink:var(--smart-ink); }
 body[data-subject="home"]      { --accent:#FCF7EE;          --accent-ink:#0F1220; }
 
 *{box-sizing:border-box;margin:0;padding:0}
@@ -53,6 +57,8 @@ button{font-family:var(--font)}
 .tile.clock{background:linear-gradient(140deg,#FF9F45,#FF6B35)}
 .tile.devotion{background:linear-gradient(140deg,#D89AC4,#A85899)}
 .tile.states{background:linear-gradient(140deg,#9B8CFF,#6A57D6)}
+.tile.health{background:linear-gradient(140deg,#FF7B7B,#D94A4A)}
+.tile.smart{background:linear-gradient(140deg,#7EC8FF,#3E8FD1)}
 .tile.soon{background:#242A48;color:var(--ink-dim);cursor:default;position:relative}
 .tile.soon:hover{transform:none}
 .tile-icon{font-size:clamp(46px,8vw,90px);line-height:1}
@@ -374,6 +380,49 @@ button{font-family:var(--font)}
   .fact-row{grid-template-columns:1fr 1fr;gap:10px}
   .compass .cdir{width:50px;height:50px;font-size:19px}
 }
+
+/* ===== MONEY: change + enough ===== */
+.shop{background:var(--panel2);border-radius:18px;padding:clamp(18px,3vw,30px);text-align:center}
+.shop .shop-item{font-size:clamp(56px,12vw,96px);line-height:1;display:block}
+.shop .shop-name{font-size:clamp(19px,2.6vw,26px);font-weight:800;margin-top:6px}
+.shop .shop-price{font-size:clamp(30px,6vw,50px);font-weight:800;color:var(--accent);margin-top:4px;letter-spacing:-.02em}
+.paidrow{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;align-items:center;margin-top:18px}
+.paidrow .coin{width:clamp(52px,11vw,78px);margin:0;font-size:clamp(15px,2.4vw,22px)}
+.paidrow .bill{width:clamp(96px,20vw,140px);margin:0;font-size:clamp(20px,3.4vw,32px)}
+.yesno{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px}
+.big-choice{border:3px solid var(--line);background:var(--panel2);color:var(--ink);border-radius:18px;padding:20px 12px;font-size:clamp(22px,4vw,32px);font-weight:800;cursor:pointer;transition:transform .12s ease,border-color .12s ease}
+.big-choice:hover{transform:translateY(-3px);border-color:var(--accent)}
+.big-choice.right{border-color:var(--right);background:rgba(126,217,87,.16)}
+.big-choice.wrong{border-color:var(--wrong);background:rgba(255,122,112,.16)}
+
+/* ===== HEALTH + SMART shared ===== */
+.routine-head{display:flex;align-items:center;gap:10px;margin:24px 0 12px;font-size:clamp(18px,2.3vw,23px);font-weight:800;color:var(--accent)}
+.check-list{display:grid;gap:10px}
+.check-item{display:flex;align-items:center;gap:14px;text-align:left;background:var(--panel2);border:2px solid var(--line);border-radius:16px;padding:14px 16px;cursor:pointer;color:var(--ink);transition:border-color .12s ease,background .12s ease}
+.check-item:hover{border-color:var(--accent)}
+.check-item .ci-box{flex:0 0 auto;width:34px;height:34px;border-radius:10px;border:3px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:20px;line-height:1}
+.check-item .ci-emoji{font-size:clamp(26px,4.4vw,34px);line-height:1;flex:0 0 auto}
+.check-item .ci-text{font-size:clamp(16px,2.1vw,20px);font-weight:700;line-height:1.35}
+.check-item.done{background:rgba(126,217,87,.14);border-color:var(--right)}
+.check-item.done .ci-box{border-color:var(--right);background:var(--right);color:#0F2B08}
+.check-item.done .ci-text{text-decoration:line-through;color:var(--ink-dim)}
+.streak{text-align:center;font-size:clamp(16px,2.2vw,20px);font-weight:800;margin:4px 0 16px;color:var(--accent)}
+.habit-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+.habit{text-align:left;background:var(--panel2);border:2px solid var(--line);border-radius:18px;padding:18px 16px;cursor:pointer;color:var(--ink);transition:transform .12s ease,border-color .12s ease}
+.habit:hover,.habit.lit{transform:translateY(-3px);border-color:var(--accent)}
+.habit .hb-top{display:flex;align-items:center;gap:10px;font-size:clamp(18px,2.3vw,22px);font-weight:800;line-height:1.2}
+.habit .hb-emoji{font-size:clamp(30px,5vw,40px);line-height:1}
+.habit .hb-why{color:var(--ink-dim);font-size:clamp(14px,1.7vw,16px);line-height:1.5;margin-top:9px}
+.rule{display:flex;gap:14px;align-items:flex-start;text-align:left;background:var(--panel2);border:2px solid var(--line);border-radius:16px;padding:16px;cursor:pointer;color:var(--ink);width:100%;transition:border-color .12s ease}
+.rule:hover,.rule.lit{border-color:var(--accent)}
+.rule .r-emoji{font-size:clamp(28px,4.6vw,38px);line-height:1;flex:0 0 auto}
+.rule .r-title{font-size:clamp(17px,2.2vw,21px);font-weight:800}
+.rule .r-body{color:var(--ink-dim);font-size:clamp(14px,1.7vw,16px);line-height:1.5;margin-top:5px}
+.rule-list{display:grid;gap:12px}
+@media (max-width:560px){
+  .habit-grid{grid-template-columns:1fr}
+  .yesno{gap:10px}
+}
 </style>
 </head>
 <body data-subject="home">
@@ -408,6 +457,14 @@ button{font-family:var(--font)}
       <button class="tile states" data-open="states">
         <span class="tile-icon">🗺️</span>
         <span class="tile-name">States</span>
+      </button>
+      <button class="tile health" data-open="health">
+        <span class="tile-icon">🪥</span>
+        <span class="tile-name">Healthy Me</span>
+      </button>
+      <button class="tile smart" data-open="smart">
+        <span class="tile-icon">📱</span>
+        <span class="tile-name">Screen Smart</span>
       </button>
     </div>
   </div>
@@ -615,6 +672,8 @@ button{font-family:var(--font)}
       <button class="tab" role="tab" aria-selected="true" data-tab="coins">Coins</button>
       <button class="tab" role="tab" aria-selected="false" data-tab="bills">Dollar Bills</button>
       <button class="tab" role="tab" aria-selected="false" data-tab="count">Counting Money</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="enough">Enough?</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="change">Making Change</button>
       <button class="tab" role="tab" aria-selected="false" data-tab="mpractice">Practice</button>
     </div>
     <div class="panel on" data-panel="coins">
@@ -637,6 +696,33 @@ button{font-family:var(--font)}
         <div class="countbox" id="countBox"></div>
         <div style="text-align:center;margin-top:20px"><button class="next-btn" id="countNew" type="button">Show me another →</button></div>
         <div class="readout" id="countRead" style="margin-top:22px;text-align:center">Count all the coins to find the total.</div>
+      </div>
+    </div>
+    <div class="panel" data-panel="enough">
+      <div class="card">
+        <div class="eyebrow">Do I have enough money?</div>
+        <div class="level-note">Look at the price. Then count what is in your hand. Can you buy it?</div>
+        <div class="shop" id="enoughShop"></div>
+        <div class="paidrow" id="enoughHand"></div>
+        <div class="yesno">
+          <button class="big-choice" type="button" data-yn="yes">👍 Yes!</button>
+          <button class="big-choice" type="button" data-yn="no">👎 Not enough</button>
+        </div>
+        <div style="text-align:center;margin-top:18px"><button class="next-btn" id="enoughNew" type="button">Show me another →</button></div>
+        <div class="readout" id="enoughRead" style="margin-top:18px;text-align:center">Count your money, then choose.</div>
+      </div>
+    </div>
+    <div class="panel" data-panel="change">
+      <div class="card">
+        <div class="eyebrow">How much change do I get back?</div>
+        <div class="level-note">You pay with more than it costs, so the store gives money back. That is called change.</div>
+        <div class="shop" id="changeShop"></div>
+        <div class="paidrow" id="changeHand"></div>
+        <div style="text-align:center;margin-top:18px">
+          <button class="next-btn" id="changeShow" type="button">Show the change</button>
+          <button class="next-btn" id="changeNew" type="button">Show me another →</button>
+        </div>
+        <div class="readout" id="changeRead" style="margin-top:18px;text-align:center">Take the price away from what you paid.</div>
       </div>
     </div>
     <div class="panel" data-panel="mpractice">
@@ -807,6 +893,96 @@ button{font-family:var(--font)}
   </div>
 </div>
 
+<div class="screen" id="screen-health">
+  <div class="wrap">
+    <nav class="topnav">
+      <button class="home-btn" data-home>← Home</button>
+      <div class="subject-title">🪥 Healthy Me</div>
+      <button class="speak-btn top" id="speak-health">🔊 Read Aloud</button>
+    </nav>
+    <div class="tabs" role="tablist" data-tabs="health">
+      <button class="tab" role="tab" aria-selected="true" data-tab="hday">My Day</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="hclean">Staying Clean</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="hbody">Strong Body</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="hpractice">Practice</button>
+    </div>
+
+    <div class="panel on" data-panel="hday">
+      <div class="card">
+        <div class="eyebrow">✅ Check it off as you do it</div>
+        <div class="level-note">You already know these! This is just to help you remember. It starts fresh every morning.</div>
+        <div class="streak" id="dayStreak"></div>
+        <div id="dayWrap"></div>
+        <div class="readout" id="dayRead" style="margin-top:22px;text-align:center">Tap each one as you finish it.</div>
+      </div>
+    </div>
+
+    <div class="panel" data-panel="hclean">
+      <div class="card">
+        <div class="eyebrow">🧼 Staying clean keeps germs away</div>
+        <div class="level-note">Tap any card to hear why it matters. Germs are too tiny to see &mdash; that is why we do these every day.</div>
+        <div class="habit-grid" id="cleanGrid"></div>
+        <div class="readout" id="cleanRead" style="margin-top:22px">Tap a card to hear about it.</div>
+      </div>
+    </div>
+
+    <div class="panel" data-panel="hbody">
+      <div class="card">
+        <div class="eyebrow">💪 Taking care of your body</div>
+        <div class="level-note">Water, moving, and sleep. These three make you feel good and help you grow.</div>
+        <div class="habit-grid" id="bodyGrid"></div>
+        <div class="readout" id="bodyRead" style="margin-top:22px">Tap a card to hear about it.</div>
+      </div>
+    </div>
+
+    <div class="panel" data-panel="hpractice">
+      <div class="card" id="quiz-health"></div>
+    </div>
+  </div>
+</div>
+
+<div class="screen" id="screen-smart">
+  <div class="wrap">
+    <nav class="topnav">
+      <button class="home-btn" data-home>← Home</button>
+      <div class="subject-title">📱 Screen Smart</div>
+      <button class="speak-btn top" id="speak-smart">🔊 Read Aloud</button>
+    </nav>
+    <div class="tabs" role="tablist" data-tabs="smart">
+      <button class="tab" role="tab" aria-selected="true" data-tab="srules">Screen Rules</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="sreal">Real or Not?</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="zpractice">Practice</button>
+    </div>
+
+    <div class="panel on" data-panel="srules">
+      <div class="card">
+        <div class="eyebrow">📱 Rules for phones, tablets and games</div>
+        <div class="level-note">Tap any rule to hear it. The big one: <b>if you are not sure, go ask a grown-up.</b> You never get in trouble for asking.</div>
+        <div class="rule-list" id="ruleList"></div>
+        <div class="readout" id="ruleRead" style="margin-top:22px">Tap a rule to hear it.</div>
+      </div>
+    </div>
+
+    <div class="panel" data-panel="sreal">
+      <div class="card">
+        <div class="eyebrow">🤔 Is this real, or is it trying to trick me?</div>
+        <div class="level-note">Screens show lots of things that are not true. Read it, then decide.</div>
+        <div class="shop" id="realBox"></div>
+        <div class="yesno">
+          <button class="big-choice" type="button" data-rn="real">✅ Real</button>
+          <button class="big-choice" type="button" data-rn="fake">🚫 A trick</button>
+        </div>
+        <div style="text-align:center;margin-top:18px"><button class="next-btn" id="realNew" type="button">Show me another →</button></div>
+        <div class="readout" id="realRead" style="margin-top:18px;text-align:center">Have a look, then choose.</div>
+      </div>
+    </div>
+
+    <div class="panel" data-panel="zpractice">
+      <div class="card" id="quiz-smart"></div>
+    </div>
+  </div>
+</div>
+
 <div class="screen" id="screen-devotion">
   <div class="wrap">
     <nav class="topnav">
@@ -967,6 +1143,12 @@ $$("[data-tabs]").forEach(function(tabs){
       if(t.dataset.tab==="cpractice") startQuiz("clock");
       if(t.dataset.tab==="rpractice") startQuiz("reading");
       if(t.dataset.tab==="spractice") startQuiz("states");
+      if(t.dataset.tab==="hpractice") startQuiz("health");
+      if(t.dataset.tab==="zpractice") startQuiz("smart");
+      if(t.dataset.tab==="enough") newEnoughRound();
+      if(t.dataset.tab==="change") newChangeRound();
+      if(t.dataset.tab==="sreal") newRealRound();
+      if(t.dataset.tab==="hday") renderDay();
       if(t.dataset.tab==="count") newCountRound();
       if(t.dataset.tab==="match") buildMatchQuiz();
     });
@@ -1557,7 +1739,7 @@ function startQuiz(subject){
 }
 function nextQuestion(){
   stopReadingSequence();
-  var makerFns={time:timeMakers,money:moneyMakers,reading:readingMakers,states:statesMakers,clock:clockMakers};
+  var makerFns={time:timeMakers,money:moneyMakers,reading:readingMakers,states:statesMakers,health:healthMakers,smart:smartMakers,clock:clockMakers};
   var makers=(makerFns[quiz.subject]||clockMakers)();
   var made=makers[Math.floor(Math.random()*makers.length)]();
   var opts=[made.a];
@@ -1855,11 +2037,322 @@ function statesMakers(){
   ];
 }
 
+/* ============ MONEY: ENOUGH? + MAKING CHANGE ============ */
+var SHOP_ITEMS=[
+  {e:"🍎",n:"an apple"},{e:"🍌",n:"a banana"},{e:"✏️",n:"a pencil"},{e:"🧃",n:"a juice box"},
+  {e:"🍪",n:"a cookie"},{e:"🎈",n:"a balloon"},{e:"🧦",n:"socks"},{e:"🖍️",n:"a crayon"},
+  {e:"🍭",n:"a lollipop"},{e:"📕",n:"a little book"},{e:"🧼",n:"a bar of soap"},{e:"🪀",n:"a yo-yo"}
+];
+function coinEl(c){ var d=document.createElement("div"); d.className="coin "+c.k; d.textContent=c.label; return d; }
+function centsWord(c){ return c+" cent"+(c===1?"":"s"); }
+/* Greedy change: always makes exact change with US coins */
+function makeChange(cents){
+  var out=[], left=cents;
+  [{k:"quarter",v:25},{k:"dime",v:10},{k:"nickel",v:5},{k:"penny",v:1}].forEach(function(d){
+    while(left>=d.v){ out.push(COINS.filter(function(c){return c.k===d.k})[0]); left-=d.v; }
+  });
+  return out;
+}
+var enoughRound=null;
+function newEnoughRound(){
+  var item=pick(SHOP_ITEMS);
+  var hand=[], total=0, howMany=2+Math.floor(Math.random()*4);
+  for(var i=0;i<howMany;i++){ var c=pick(COINS); hand.push(c); total+=c.value; }
+  /* price lands near the total so the answer isn't obvious either way */
+  var price=Math.max(1, total + (Math.random()<0.5 ? -(1+Math.floor(Math.random()*12)) : (1+Math.floor(Math.random()*12))));
+  enoughRound={price:price,total:total,can:total>=price};
+  $("#enoughShop").innerHTML='<span class="shop-item">'+item.e+'</span><div class="shop-name">'+item.n+'</div><div class="shop-price">'+price+'¢</div>';
+  var hd=$("#enoughHand"); hd.innerHTML="";
+  hand.forEach(function(c){ hd.appendChild(coinEl(c)) });
+  $$(".big-choice",$('[data-panel="enough"]')).forEach(function(b){ b.classList.remove("right","wrong") });
+  $("#enoughRead").textContent="Count your money, then choose.";
+  say("You want to buy "+item.n+". It costs "+centsWord(price)+". Do you have enough?");
+}
+function answerEnough(said,btn){
+  if(!enoughRound) return;
+  var correct=(said==="yes")===enoughRound.can;
+  btn.classList.add(correct?"right":"wrong");
+  var msg;
+  if(enoughRound.can){
+    msg="You have "+enoughRound.total+"¢ and it costs "+enoughRound.price+"¢, so YES, you have enough. You would get "+(enoughRound.total-enoughRound.price)+"¢ back.";
+  } else {
+    msg="You have "+enoughRound.total+"¢ but it costs "+enoughRound.price+"¢, so no, not enough. You need "+(enoughRound.price-enoughRound.total)+"¢ more.";
+  }
+  $("#enoughRead").innerHTML=(correct?"✅ ":"❌ ")+msg;
+  say((correct?"That's right! ":"Not quite. ")+msg);
+}
+var changeRound=null;
+function newChangeRound(){
+  var item=pick(SHOP_ITEMS);
+  var paidChoices=[25,50,100];
+  var paid=pick(paidChoices);
+  var price=1+Math.floor(Math.random()*(paid-1));
+  changeRound={price:price,paid:paid,change:paid-price};
+  $("#changeShop").innerHTML='<span class="shop-item">'+item.e+'</span><div class="shop-name">'+item.n+'</div><div class="shop-price">'+price+'¢</div>';
+  var hd=$("#changeHand"); hd.innerHTML="";
+  if(paid===100){ var b=document.createElement("div"); b.className="bill b1"; b.textContent="$1"; hd.appendChild(b); }
+  else if(paid===50){ hd.appendChild(coinEl(COINS[3])); hd.appendChild(coinEl(COINS[3])); }
+  else { hd.appendChild(coinEl(COINS[3])); }
+  $("#changeRead").innerHTML='You paid <b>'+paid+'¢</b>. It cost <b>'+price+'¢</b>. How much comes back?';
+  var paidWord = paid===100 ? "one dollar" : centsWord(paid);
+  say("You are buying "+item.n+" for "+centsWord(price)+", and you pay with "+paidWord+". How much change do you get back?");
+}
+function showChange(){
+  if(!changeRound) return;
+  var coins=makeChange(changeRound.change);
+  var names={};
+  coins.forEach(function(c){ names[c.name]=(names[c.name]||0)+1 });
+  var parts=[]; for(var n in names) parts.push(names[n]+" "+n.toLowerCase()+(names[n]>1?"s":""));
+  var listed = parts.length ? parts.join(", ") : "nothing";
+  $("#changeRead").innerHTML='<em>'+changeRound.paid+'¢ &minus; '+changeRound.price+'¢ = <b>'+changeRound.change+'¢</b></em><br>'+
+    (changeRound.change? 'That is '+listed+'.' : 'You paid exactly right, so no change!');
+  say(changeRound.paid+" take away "+changeRound.price+" is "+changeRound.change+". "+(changeRound.change?"That is "+listed+".":"You paid exactly right!"));
+}
+
+/* ================= HEALTHY ME ================= */
+var DAY_PLAN=[
+  {t:"Morning",icon:"🌅",items:[
+    {e:"🛏️",x:"Make my bed",s:"Make your bed. It takes one minute and it makes your whole room feel tidy."},
+    {e:"🪥",x:"Brush my teeth after breakfast",s:"Brush your teeth after breakfast. Brushing gets the food off your teeth so they stay strong."},
+    {e:"💇",x:"Brush my hair",s:"Brush your hair so it does not tangle up."},
+    {e:"👕",x:"Put on clean clothes",s:"Put on clean clothes. Fresh clothes every day keeps you feeling good."}
+  ]},
+  {t:"Meals & through the day",icon:"🍽️",items:[
+    {e:"🧼",x:"Wash my hands before I eat",s:"Wash your hands before you eat. Your hands touch everything all day, so germs get on them. Soap and water washes them away."},
+    {e:"💧",x:"Drink water",s:"Drink water all day, especially when it is hot outside. Water keeps your body cool and working right."},
+    {e:"🏃",x:"Play and move my body",s:"Play and move your body. Running and jumping makes your heart and your muscles strong."},
+    {e:"🤧",x:"Cover my sneeze",s:"Cover your mouth when you sneeze or cough. Use your elbow, not your hand, so you do not spread germs to what you touch."}
+  ]},
+  {t:"Bedtime",icon:"🌙",items:[
+    {e:"🛁",x:"Take my bath",s:"Take your bath and get all the day's dirt off."},
+    {e:"🪥",x:"Brush my teeth before bed",s:"Brush your teeth before bed. This one matters most, because food left on your teeth all night is what makes holes."},
+    {e:"🛌",x:"Sleep in my own bed",s:"Sleep in your own bed, all night. You are a big kid, and your body rests best in your own space."},
+    {e:"😴",x:"Go to sleep on time",s:"Go to sleep on time. Kids your age need about ten hours of sleep so your body can grow while you rest."}
+  ]}
+];
+var CLEAN=[
+  {e:"🧼",t:"Wash before eating",why:"Soap and warm water for as long as it takes to sing Happy Birthday twice. Hands carry germs you cannot see.",
+   s:"Wash your hands before you eat. Use soap and warm water, and scrub for as long as it takes to sing Happy Birthday two times. Your hands pick up germs all day that are too small to see."},
+  {e:"🪥",t:"Brush twice a day",why:"After breakfast and before bed. Brushing keeps holes, called cavities, out of your teeth.",
+   s:"Brush your teeth two times every day. After breakfast, and before bed. Brushing keeps holes, called cavities, out of your teeth."},
+  {e:"🤧",t:"Sneeze into your elbow",why:"Not your hand! Hands touch door handles and toys. Your elbow does not.",
+   s:"When you sneeze or cough, turn your head and use your elbow, not your hand. Your hands touch door handles and toys, and that is how germs travel to other people. Your elbow does not touch things."},
+  {e:"🐶",t:"No kissing pets",why:"Pets are for hugging and petting, not kissing. Their mouths carry germs that make people sick. Wash up after playing with them.",
+   s:"Love your pets, but do not kiss them, and keep them away from your face. Animal mouths carry germs that can make people sick. Give them a good pet and a hug instead, then wash your hands."},
+  {e:"🥤",t:"Don't share after others",why:"No sharing drinks, forks, spoons or toothbrushes — not with friends, not with family, not even with Grandma. That is how colds get passed around.",
+   s:"Do not drink after other people, and do not share forks, spoons, straws or toothbrushes. Not with friends, not with your brother or sister, and not even with Grandma. That is one of the fastest ways a cold gets passed around a house. It is not unkind, it is just keeping everybody well."},
+  {e:"💇",t:"Brush your hair",why:"Every morning, so it does not tangle. Tangles hurt a lot more the longer you wait.",
+   s:"Brush your hair every morning so it does not get tangled. The longer you wait, the more the tangles hurt to brush out."},
+  {e:"🛏️",t:"Make your bed",why:"One minute of work makes your whole room look clean, and you climb into a tidy bed at night.",
+   s:"Make your bed every morning. It only takes about one minute, it makes your whole room look clean, and it feels good to climb into a tidy bed at night."},
+  {e:"🧻",t:"Wash after the bathroom",why:"Every single time, with soap. This is the most important hand wash of the whole day.",
+   s:"Wash your hands after you use the bathroom. Every single time, with soap. This is the most important hand washing of the whole day."}
+];
+var BODY=[
+  {e:"💧",t:"Drink your water",why:"In a hot Texas summer you need water even before you feel thirsty. Thirsty means you already waited too long. Pale yellow is the goal.",
+   s:"Drink water all through the day, especially in a hot Texas summer. Here is the trick, do not wait until you feel thirsty. Feeling thirsty means your body already needed it a while ago. Sip water all day long."},
+  {e:"🏃",t:"Move every day",why:"About an hour of running, jumping, biking or playing outside. Your heart is a muscle, and moving is how it gets strong.",
+   s:"Move your body every day, about one hour. Run, jump, ride your bike, play outside. Your heart is a muscle, and the only way it gets strong is by you moving."},
+  {e:"😴",t:"Sleep about 10 hours",why:"Your body does its growing while you are asleep. Tired kids get grumpy and get sick more easily.",
+   s:"Kids your age need about ten hours of sleep every night. Your body does its growing while you are asleep. When you do not get enough, you feel grumpy and you get sick more easily."},
+  {e:"🛌",t:"Sleep in your own bed",why:"All night, in your own space. You sleep deeper, and so do Mom and Dad. You are a big kid now.",
+   s:"Sleep in your own bed, all night long. You sleep deeper in your own space, and so do Mom and Dad. You are a big kid now, and you can do this."},
+  {e:"🥦",t:"Eat some colors",why:"Try to get different colored fruits and vegetables. Different colors do different jobs in your body.",
+   s:"Try to eat different colored fruits and vegetables. Green, red, orange, yellow. Different colors do different jobs inside your body, so the more colors, the better."},
+  {e:"☀️",t:"Watch out in the heat",why:"On hot days take breaks in the shade, drink extra water, and tell a grown-up right away if you feel dizzy or get a headache.",
+   s:"On very hot days, take breaks in the shade and drink extra water. If you ever feel dizzy, or sick to your stomach, or you get a headache while playing outside, stop and tell a grown up right away."}
+];
+function todayKey(){ var d=new Date(); return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(); }
+var dayDone={};
+function loadDay(){
+  try{
+    var raw=JSON.parse(localStorage.getItem("hb_day")||"{}");
+    dayDone=(raw && raw.key===todayKey() && raw.done) ? raw.done : {};
+  }catch(e){ dayDone={}; }
+}
+function saveDay(){
+  try{ localStorage.setItem("hb_day",JSON.stringify({key:todayKey(),done:dayDone})); }catch(e){}
+}
+function renderDay(){
+  loadDay();
+  var wrap=$("#dayWrap"); wrap.innerHTML="";
+  var total=0, done=0;
+  DAY_PLAN.forEach(function(block,bi){
+    var h=document.createElement("div");
+    h.className="routine-head";
+    h.innerHTML='<span>'+block.icon+'</span><span>'+block.t+'</span>';
+    wrap.appendChild(h);
+    var list=document.createElement("div");
+    list.className="check-list";
+    block.items.forEach(function(it,ii){
+      var id=bi+"_"+ii; total++;
+      var b=document.createElement("button");
+      b.type="button"; b.className="check-item"+(dayDone[id]?" done":"");
+      if(dayDone[id]) done++;
+      b.innerHTML='<span class="ci-box">'+(dayDone[id]?"✓":"")+'</span><span class="ci-emoji">'+it.e+'</span><span class="ci-text">'+it.x+'</span>';
+      b.addEventListener("click",function(){
+        if(dayDone[id]){ delete dayDone[id]; }
+        else { dayDone[id]=1; say(pick(["Nice job!","Well done!","That's it!","Good job!"])+" "+it.x+"."); }
+        saveDay(); renderDay();
+      });
+      list.appendChild(b);
+    });
+    wrap.appendChild(list);
+  });
+  var left=total-done;
+  $("#dayStreak").textContent = done===total
+    ? "🌟 All done for today — every single one!"
+    : done+" of "+total+" done · "+left+" to go";
+}
+
+function buildHealth(){
+  function fillHabits(sel,data,readSel){
+    var g=$(sel);
+    data.forEach(function(o){
+      var b=document.createElement("button");
+      b.type="button"; b.className="habit";
+      b.innerHTML='<div class="hb-top"><span class="hb-emoji">'+o.e+'</span><span>'+o.t+'</span></div><div class="hb-why">'+o.why+'</div>';
+      b.addEventListener("click",function(){
+        litOnly(b,"habit");
+        $(readSel).innerHTML='<b>'+o.t+'</b>';
+        say(o.s);
+      });
+      g.appendChild(b);
+    });
+  }
+  fillHabits("#cleanGrid",CLEAN,"#cleanRead");
+  fillHabits("#bodyGrid",BODY,"#bodyRead");
+  renderDay();
+
+  $("#speak-health").addEventListener("click",function(){
+    var open=$('.tab[aria-selected="true"]',$('[data-tabs="health"]')).dataset.tab;
+    if(open==="hday") say("This is your day. Make your bed, brush your teeth after breakfast, brush your hair, wash your hands before you eat, drink your water, move your body, and at night, bath, brush, and sleep in your own bed. Tap each one as you finish it.");
+    else if(open==="hclean") say("Germs are tiny things that make you sick, and they are too small to see. Washing your hands, brushing your teeth, sneezing into your elbow, and not sharing drinks are how you keep them away. Tap any card to hear more.");
+    else if(open==="hbody") say("Three things keep your body strong. Water, moving, and sleep. Drink water all day, play hard for about an hour, and sleep about ten hours in your own bed.");
+    else say("Let's practice taking care of our bodies!");
+  });
+}
+function healthMakers(){
+  var yn=["Yes","No"];
+  return [
+    function(){return{q:"When should you wash your hands?",a:"Before I eat",pool:["Before I eat","Only on Sundays","Never","After I go to bed"]}},
+    function(){return{q:"How many times a day should you brush your teeth?",a:"2",pool:["2","0","1","9"]}},
+    function(){return{q:"When you sneeze, what should you cover your mouth with?",a:"My elbow",pool:["My elbow","My hand","Nothing","A friend"]}},
+    function(){return{q:"Should you let a pet lick or kiss your face?",a:"No",pool:yn}},
+    function(){return{q:"Can you drink out of Grandma's cup after her?",a:"No",pool:yn}},
+    function(){return{q:"About how many hours of sleep do kids your age need?",a:"10",pool:["10","2","4","20"]}},
+    function(){return{q:"Where should you sleep all night?",a:"In my own bed",pool:["In my own bed","In Mom and Dad's bed","On the floor","Outside"]}},
+    function(){return{q:"It is a hot Texas day. What should you drink a lot of?",a:"Water",pool:["Water","Nothing","Hot cocoa","Milkshakes"]}},
+    function(){return{q:"Should you wait until you feel thirsty to drink water?",a:"No",pool:yn}},
+    function(){return{q:"About how long should you play and move your body each day?",a:"1 hour",pool:["1 hour","1 minute","0 minutes","10 seconds"]}},
+    function(){return{q:"When do you brush your teeth at night?",a:"Before bed",pool:["Before bed","Never","At lunch","Last week"]}},
+    function(){return{q:"You feel dizzy playing outside in the heat. What do you do?",a:"Tell a grown-up",pool:["Tell a grown-up","Keep playing","Hide it","Run faster"]}},
+    function(){return{q:"Can you share a toothbrush with your brother or sister?",a:"No",pool:yn}},
+    function(){return{q:"What is the most important time to wash your hands?",a:"After the bathroom",pool:["After the bathroom","While sleeping","Never","At the park"]}}
+  ];
+}
+
+/* ================= SCREEN SMART ================= */
+var SCREEN_RULES=[
+  {e:"🙋",t:"Ask before you tap",b:"Ask a grown-up before you download anything, buy anything, or open a new app. You never get in trouble for asking first.",
+   s:"Ask a grown up before you download anything, buy anything, or open a new app. You will never get in trouble for asking first. Asking is always the right move."},
+  {e:"🤫",t:"Your name and address stay private",b:"Never type your full name, your address, your school, or your phone number into a game or a website.",
+   s:"Never type your full name, your home address, the name of your school, or your phone number into a game or a website. Those are private, and they belong to your family only."},
+  {e:"🚫",t:"Strangers online are still strangers",b:"Someone in a game who is nice to you is still a stranger. Never agree to meet anyone, and tell a grown-up if someone asks you to.",
+   s:"Someone in a game can be very nice to you and still be a stranger. Never tell them where you live and never agree to meet them anywhere. If anyone online asks to meet you or asks you to keep a secret, go tell a grown up right away."},
+  {e:"📢",t:"Ads are trying to sell you something",b:"Bright buttons that say FREE or CLICK HERE are usually ads. They want your money or your information.",
+   s:"Lots of what you see on a screen is an advertisement. Bright buttons that say free, or click here, or you won, are almost always ads. They want your money or your information. Do not tap them."},
+  {e:"😟",t:"If it feels yucky, close it",b:"If something scares you or makes you feel funny in your tummy, close it and go tell a grown-up. You will not be in trouble.",
+   s:"If anything on a screen scares you, or makes you feel funny in your tummy, close it right away and go tell a grown up. You will not be in trouble. You did the right thing by telling."},
+  {e:"💬",t:"Be kind on a screen",b:"Never type anything you would not say to someone's face. Words on a screen still hurt real feelings.",
+   s:"Never type anything to somebody that you would not say right to their face. There is a real person on the other side, and words on a screen still hurt real feelings."},
+  {e:"⏰",t:"Screens have a stop time",b:"When a grown-up says time is up, it is up. Too much screen makes it hard to sleep and hard to be nice.",
+   s:"When a grown up says screen time is over, it is over, no arguing. Too much screen time makes it hard to fall asleep and it makes everybody grumpy."},
+  {e:"🔑",t:"Passwords are secret",b:"Passwords are only for your family. Not for friends, not for anyone in a game.",
+   s:"A password is a secret. It is only for you and your parents. Never tell a password to a friend, and never type it in because somebody in a game told you to."}
+];
+var REAL_ITEMS=[
+  {q:"A pop-up says: <b>YOU WON A FREE iPAD! TAP HERE!</b>",a:"fake",w:"Nobody gives away an iPad to a person walking by. Anything that says you won a prize you never entered is a trick to get your information."},
+  {q:"A video shows a cat that can talk in a full human voice.",a:"fake",w:"Real cats cannot talk. That is made with a computer, or a person doing the voice. Lots of videos are made up for fun, but they are still not real."},
+  {q:"Mom shows you a photo of Grandma on her phone.",a:"real",w:"That is real. A photo shown to you by a grown-up you trust, of a person you know, is real."},
+  {q:"A game says: <b>Type your home address to get 1000 free coins!</b>",a:"fake",w:"A trick. A real game never needs your home address. Never type where you live, no matter what it promises."},
+  {q:"A stranger in a game says he is 8 years old too and wants to be friends.",a:"fake",w:"You cannot tell who is really on the other side. Anyone can say they are a kid. Tell a grown-up when a stranger tries to be your friend in a game."},
+  {q:"Your teacher hands you a printed book about volcanoes.",a:"real",w:"That is real. A book from your teacher or your library has been checked by grown-ups before you get it."},
+  {q:"A picture shows a shark swimming down a flooded street.",a:"fake",w:"Almost always a trick. That photo gets shared after every big storm and it has been changed on a computer. Photos can be edited."},
+  {q:"A video says drinking soda instead of water is better for you on a hot day.",a:"fake",w:"Not true. Water is what your body needs when it is hot. Just because a screen says something confidently does not make it true."},
+  {q:"Dad reads you the weather from the news app.",a:"real",w:"That is real. A weather app gets its information from scientists who measure it."},
+  {q:"A message says: <b>Send this to 10 friends or something bad will happen!</b>",a:"fake",w:"A trick, every time. Nothing bad happens if you delete it. Messages that try to scare you into sharing are never true."}
+];
+var realRound=null;
+function newRealRound(){
+  realRound=pick(REAL_ITEMS,realRound);
+  $("#realBox").innerHTML='<div style="font-size:clamp(18px,2.8vw,26px);font-weight:700;line-height:1.45">'+realRound.q+'</div>';
+  $$(".big-choice",$('[data-panel="sreal"]')).forEach(function(b){ b.classList.remove("right","wrong") });
+  $("#realRead").textContent="Have a look, then choose.";
+  say(realRound.q.replace(/<[^>]+>/g,"")+" Is that real, or is it a trick?");
+}
+function answerReal(said,btn){
+  if(!realRound) return;
+  var correct=(said===realRound.a);
+  btn.classList.add(correct?"right":"wrong");
+  $("#realRead").innerHTML=(correct?"✅ ":"❌ ")+realRound.w;
+  say((correct?"That's right. ":"Not quite. ")+realRound.w);
+}
+function buildSmart(){
+  var rl=$("#ruleList");
+  SCREEN_RULES.forEach(function(o){
+    var b=document.createElement("button");
+    b.type="button"; b.className="rule";
+    b.innerHTML='<span class="r-emoji">'+o.e+'</span><span><span class="r-title">'+o.t+'</span><span class="r-body">'+o.b+'</span></span>';
+    b.addEventListener("click",function(){
+      litOnly(b,"rule");
+      $("#ruleRead").innerHTML='<b>'+o.t+'</b>';
+      say(o.s);
+    });
+    rl.appendChild(b);
+  });
+  $$(".big-choice",$('[data-panel="sreal"]')).forEach(function(b){
+    b.addEventListener("click",function(){ answerReal(b.dataset.rn,b); });
+  });
+  $("#realNew").addEventListener("click",newRealRound);
+  $("#speak-smart").addEventListener("click",function(){
+    var open=$('.tab[aria-selected="true"]',$('[data-tabs="smart"]')).dataset.tab;
+    if(open==="srules") say("Screens can be fun, but there are rules. Ask a grown up before you tap. Keep your name and address private. Strangers online are still strangers. And if anything ever feels yucky, close it and come tell us. You will never be in trouble for telling.");
+    else if(open==="sreal") say("Lots of things on a screen are made up to trick you. Read each one and decide, is that real, or is somebody trying to trick me?");
+    else say("Let's practice being smart with screens!");
+  });
+}
+function smartMakers(){
+  var yn=["Yes","No"];
+  return [
+    function(){return{q:"A game asks for your home address. What do you do?",a:"Never type it",pool:["Never type it","Type it fast","Ask a friend","Guess it"]}},
+    function(){return{q:"A pop-up says you won a free prize. Is it real?",a:"No",pool:yn}},
+    function(){return{q:"Someone online asks to meet you in person. What do you do?",a:"Tell a grown-up",pool:["Tell a grown-up","Say yes","Keep it secret","Go alone"]}},
+    function(){return{q:"Should you tell a friend your password?",a:"No",pool:yn}},
+    function(){return{q:"Something on a screen scares you. What is the best thing to do?",a:"Close it and tell a grown-up",pool:["Close it and tell a grown-up","Keep watching","Hide it","Show a friend"]}},
+    function(){return{q:"Is everything you see in a video true?",a:"No",pool:yn}},
+    function(){return{q:"Before you download a new app, you should:",a:"Ask a grown-up",pool:["Ask a grown-up","Just tap it","Tell nobody","Pay for it"]}},
+    function(){return{q:"Will you get in trouble for telling a grown-up about something scary online?",a:"No",pool:yn}},
+    function(){return{q:"Someone in a game says he is a kid. Do you know that for sure?",a:"No",pool:yn}},
+    function(){return{q:"A message says to send it to 10 friends or something bad happens. It is:",a:"A trick",pool:["A trick","True","A rule","A game"]}},
+    function(){return{q:"Typing mean words to someone online is:",a:"Not okay",pool:["Not okay","Funny","Fine","Brave"]}},
+    function(){return{q:"When a grown-up says screen time is over, you should:",a:"Stop",pool:["Stop","Argue","Hide","Keep going"]}}
+  ];
+}
+
 initTime();
 initMoney();
 initDevotions();
 buildReading();
 buildStates();
+buildHealth();
+buildSmart();
+$$(".big-choice",$('[data-panel="enough"]')).forEach(function(b){
+  b.addEventListener("click",function(){ answerEnough(b.dataset.yn,b); });
+});
+$("#enoughNew").addEventListener("click",newEnoughRound);
+$("#changeNew").addEventListener("click",newChangeRound);
+$("#changeShow").addEventListener("click",showChange);
 if("speechSynthesis" in window) window.speechSynthesis.onvoiceschanged=function(){ getBestVoice(); };
 
 /* Inline onclick handlers resolve against global scope, so export them out of the IIFE */
