@@ -685,7 +685,7 @@ button{font-family:var(--font)}
         <div class="devotion-prayer" id="graceText">Loading prayer...</div>
         <div class="devotion-buttons">
           <button class="play-btn" onclick="sayDevotionText(document.getElementById('graceText').textContent,'grace')">🔊 Say Prayer</button>
-          <button class="watch-btn" onclick="playVideo('jBSbm-44UKk','Grace at the Table - A Child\'s Prayer of Gratitude')">📺 Watch Video</button>
+          <button class="watch-btn" onclick="playVideo('jBSbm-44UKk','Grace at the Table - A Child&#39;s Prayer of Gratitude')">📺 Watch Video</button>
         </div>
       </div>
     </div>
@@ -1531,6 +1531,11 @@ initMoney();
 initDevotions();
 buildReading();
 if("speechSynthesis" in window) window.speechSynthesis.onvoiceschanged=function(){ getBestVoice(); };
+
+/* Inline onclick handlers resolve against global scope, so export them out of the IIFE */
+window.playVideo=playVideo;
+window.closeVideo=closeVideo;
+window.sayDevotionText=sayDevotionText;
 })();
 </script>
 </body>
